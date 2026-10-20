@@ -8,7 +8,7 @@ const txt = (size: number, weight = 700) => ({
   fontFamily: "'Gaegu', cursive", fontSize: size, fontWeight: weight, fill: INK,
 } as const)
 
-export default function BoothCover() {
+export default function BoothCover({ opening, onEnter }: { opening: boolean; onEnter: () => void }) {
   return (
     <svg viewBox="0 0 640 570" className="w-full max-w-[560px]" role="img" aria-label="Hand-drawn photobooth">
       {/* sign */}
@@ -44,20 +44,31 @@ export default function BoothCover() {
       <rect x="124" y="428" width="28" height="9" fill={INK} />
       <rect x="131" y="444" width="14" height="16" fill="none" stroke={INK} strokeWidth="1.8" />
 
-      {/* curtain door */}
-      <rect x="348" y="176" width="140" height="350" fill="#ffeef5" stroke={INK} strokeWidth="2.5" />
-      {[366, 388, 410, 432, 454, 474].map((x, i) => (
-        <path key={x} d={`M${x} 178c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 120 0 174c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 118 0 172`}
-          fill="none" stroke="#f9a8c9" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
-      ))}
-      {/* stool */}
-      <ellipse cx="418" cy="448" rx="34" ry="10" fill="#fff" stroke={INK} strokeWidth="2.4" />
-      <path d="M410 456h16l4 42h-24z" fill="#fff" stroke={INK} strokeWidth="2.2" />
-      <ellipse cx="418" cy="502" rx="26" ry="6" fill="none" stroke={INK} strokeWidth="2.2" />
-      {/* enter sign (clickable next step) */}
-      <g>
-        <rect x="356" y="318" width="124" height="46" fill="#fff" stroke={INK} strokeWidth="2.6" />
-        <text x="418" y="349" textAnchor="middle" style={txt(24)}>enter →</text>
+      {/* curtain door — click to enter */}
+      <g onClick={onEnter} role="button" aria-label="Enter the photobooth">
+        <rect x="348" y="176" width="140" height="350" fill="#2b2b30" stroke={INK} strokeWidth="2.5" />
+        {/* stool (inside, revealed as the curtain opens) */}
+        <ellipse cx="418" cy="448" rx="34" ry="10" fill="#fff" stroke={INK} strokeWidth="2.4" />
+        <path d="M410 456h16l4 42h-24z" fill="#fff" stroke={INK} strokeWidth="2.2" />
+        <ellipse cx="418" cy="502" rx="26" ry="6" fill="none" stroke={INK} strokeWidth="2.2" />
+        {/* curtain — bunches to the right when opening */}
+        <g style={{
+          transform: opening ? 'translateX(104px) scaleX(0.26)' : 'none',
+          transformOrigin: '488px 350px',
+          transition: 'transform 900ms ease-in-out',
+        }}>
+          <rect x="348" y="176" width="140" height="350" fill="#ffeef5" />
+          {[366, 388, 410, 432, 454, 474].map((x, i) => (
+            <path key={x} d={`M${x} 178c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 120 0 174c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 118 0 172`}
+              fill="none" stroke="#f9a8c9" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
+          ))}
+        </g>
+        <rect x="348" y="176" width="140" height="350" fill="none" stroke={INK} strokeWidth="2.5" />
+        {/* enter sign */}
+        <g style={{ opacity: opening ? 0 : 1, transition: 'opacity 300ms' }}>
+          <rect x="356" y="318" width="124" height="46" fill="#fff" stroke={INK} strokeWidth="2.6" />
+          <text x="418" y="349" textAnchor="middle" style={txt(24)}>enter →</text>
+        </g>
       </g>
 
       {/* little mirror window */}
@@ -66,7 +77,7 @@ export default function BoothCover() {
 
       {/* ground */}
       <path d="M38 528c120-6 240 4 360-2 70-3 140 2 204-2" fill="none" stroke={INK} strokeWidth="2.4" strokeLinecap="round" />
-      <text x="320" y="556" textAnchor="middle" style={{ ...txt(18), fill: '#c2437f' }}>♡ click the curtain to go in — coming next step ♡</text>
+      <text x="320" y="556" textAnchor="middle" style={{ ...txt(18), fill: '#c2437f' }}>♡ click the curtain to go in ♡</text>
     </svg>
   )
 }
