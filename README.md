@@ -1,5 +1,10 @@
 # Cut of Four <img src="assets/pixel-camera.png" height="34" alt="Pink pixel camera" />
 
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+
 A cute photobooth that lives in your browser.
 
 Take webcam photos, pick a pretty frame, add words and stickers, then save the final picture.
