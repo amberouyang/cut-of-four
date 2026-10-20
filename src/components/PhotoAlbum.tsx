@@ -12,10 +12,11 @@ function downloadPhoto(photo: AlbumPhoto) {
  * The photo shelf — every photo taken in the booth, all in one place.
  * Step 1 of the scrapbook: collect first, decorate into book pages later.
  */
-export default function PhotoAlbum({ photos, onBack, onDelete }: {
+export default function PhotoAlbum({ photos, onBack, onDelete, onOpenBook }: {
   photos: AlbumPhoto[]
   onBack: () => void
   onDelete: (id: number) => void
+  onOpenBook: () => void
 }) {
   return (
     <div className="flex w-full flex-col items-center">
@@ -27,6 +28,10 @@ export default function PhotoAlbum({ photos, onBack, onDelete }: {
       <p className="mt-1 max-w-md text-center text-sm opacity-60">
         every photo you take lands here, saved in your browser on this device only ♡
       </p>
+      <button onClick={onOpenBook}
+        className="ink-sm mt-4 bg-pink-mid px-5 py-2 font-bold transition hover:-rotate-1">
+        open your scrapbook ♡
+      </button>
 
       {photos.length === 0 ? (
         <div className="ink ink-shadow mt-8 max-w-sm bg-white p-6 text-center">

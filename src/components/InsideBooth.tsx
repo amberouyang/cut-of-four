@@ -8,6 +8,7 @@ import DraggableSticker from './DraggableSticker'
 import { stickerById, type StickerInstance } from '../data/stickers'
 import { exportNodePng } from '../utils/exportPng'
 import PhotoAlbum from './PhotoAlbum'
+import Scrapbook from './Scrapbook'
 import { loadAlbum, removeFromAlbum, saveToAlbum, type AlbumPhoto } from '../utils/album'
 
 let stickerUid = 0
@@ -30,7 +31,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     strip: [], 'student-id': [], music: [], instagram: [],
   })
   // photo shelf: every shot is kept in the browser (see utils/album)
-  const [view, setView] = useState<'booth' | 'album'>('booth')
+  const [view, setView] = useState<'booth' | 'album' | 'book'>('booth')
   const [albumPhotos, setAlbumPhotos] = useState<AlbumPhoto[]>([])
   useEffect(() => { loadAlbum().then(setAlbumPhotos).catch(() => {}) }, [])
   const deleteAlbumPhoto = (id: number) => {
@@ -154,7 +155,16 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
   if (view === 'album') {
     return (
       <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
-        <PhotoAlbum photos={albumPhotos} onBack={() => setView('booth')} onDelete={deleteAlbumPhoto} />
+        <PhotoAlbum photos={albumPhotos} onBack={() => setView('booth')} onDelete={deleteAlbumPhoto}
+          onOpenBook={() => setView('book')} />
+      </div>
+    )
+  }
+
+  if (view === 'book') {
+    return (
+      <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
+        <Scrapbook onBack={() => setView('album')} />
       </div>
     )
   }
