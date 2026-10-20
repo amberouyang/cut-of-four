@@ -87,15 +87,15 @@ function StudentId({ photos = [], filterCss, onClearSlot, texts = DEFAULT_TEXTS 
           <p>Class: <span className="font-hand text-[21px]">{texts.idClass}</span></p>
           <p>School: <span className="font-hand text-[21px]">{texts.idSchool}</span></p>
           <HeartDoodle size={18} className="absolute right-2 top-8 opacity-70" fill="#fff" />
-          <div className="mt-9">
-            <div className="relative border-t-2 border-ink">
+          <div className="mt-3 flex items-end gap-1.5">
+            <span className="font-hand text-[24px] font-bold leading-none text-pink-deep -rotate-6">×</span>
+            <div className="relative flex-1 border-b-2 border-ink">
               {texts.idSign && (
                 <span className="absolute bottom-[3px] left-1/2 -translate-x-1/2 -rotate-2 whitespace-nowrap font-hand text-[22px] leading-none">
                   {texts.idSign}
                 </span>
               )}
             </div>
-            <p className="mt-1 text-center text-sm">Sign:</p>
           </div>
         </div>
       </div>
