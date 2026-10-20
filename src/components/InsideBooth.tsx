@@ -45,6 +45,27 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     setAllStickers((prev) => ({ ...prev, [frame]: prev[frame].filter((s) => s.instanceId !== instanceId) }))
     setSelectedStickerId(null)
   }
+  // undo history for photos you clear (× on a slot) or shoot over
+  const [undoStack, setUndoStack] = useState<{ frame: FrameId; index: number; photo: string }[]>([])
+  const undoLastPhoto = () => {
+    const last = undoStack[undoStack.length - 1]
+    if (!last) return
+    setAllPhotos((prev) => ({
+      ...prev,
+      [last.frame]: prev[last.frame].map((p, i) => (i === last.index ? last.photo : p)),
+    }))
+    setUndoStack((s) => s.slice(0, -1))
+  }
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !(e.target instanceof HTMLInputElement)) {
+        e.preventDefault(); undoLastPhoto()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [undoStack])
   const photos = allPhotos[frame]
   const photoCount = FRAMES.find((f) => f.id === frame)!.photoCount
   const filled = photos.filter(Boolean).length
@@ -58,6 +79,8 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     if (!cam.videoRef.current) return
     const shot = captureFrame(cam.videoRef.current)
     if (!shot) return
+    const previous = allPhotos[frame][index]
+    if (previous) setUndoStack((s) => [...s, { frame, index, photo: previous }])
     setAllPhotos((prev) => ({
       ...prev,
       [frame]: prev[frame].map((p, i) => (i === index ? shot : p)),
@@ -89,8 +112,11 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     setExporting(true)
     try { await exportNodePng(frameRef.current, frame) } finally { setExporting(false) }
   }
-  const clearSlot = (index: number) =>
+  const clearSlot = (index: number) => {
+    const previous = allPhotos[frame][index]
+    if (previous) setUndoStack((s) => [...s, { frame, index, photo: previous }])
     setAllPhotos((prev) => ({ ...prev, [frame]: prev[frame].map((p, i) => (i === index ? null : p)) }))
+  }
 
   // start the camera as soon as you step inside; stop it when you leave (hook cleanup)
   useEffect(() => { cam.start() }, [cam.start])
@@ -147,6 +173,12 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           <p className="mt-2 text-sm opacity-60">
             {photoCount === 4 ? '4 shots in a row, countdown before each' : 'one shot into this frame'} · {filled}/{photoCount} filled — click a filled slot to clear it
           </p>
+          {undoStack.length > 0 && (
+            <button onClick={undoLastPhoto}
+              className="ink-sm mt-2 bg-white px-4 py-1.5 text-sm font-bold transition hover:-rotate-1">
+              ↩ undo — bring that photo back ({undoStack.length})
+            </button>
+          )}
 
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {FILTERS.map((f) => (
