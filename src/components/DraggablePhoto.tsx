@@ -14,16 +14,17 @@ interface Props {
   selected: boolean
   onSelect: () => void
   onUpdate: (patch: Partial<PlacedPhoto>) => void
+  onRemove: () => void
 }
 
-/** A photo stuck onto a scrapbook page — drag to move, scroll to resize. */
-export default function DraggablePhoto({ item, selected, onSelect, onUpdate }: Props) {
+/** A photo stuck onto a scrapbook page — drag to move, scroll to resize, × takes it off the page. */
+export default function DraggablePhoto({ item, selected, onSelect, onUpdate, onRemove }: Props) {
   const drag = useRef<{ px: number; py: number; sx: number; sy: number; w: number; h: number } | null>(null)
 
   return (
     <div
       role="button" aria-label="Photo on page — drag to move"
-      className={`absolute z-20 touch-none select-none ${selected ? 'outline-2 outline-dashed outline-pink-deep' : ''}`}
+      className={`group absolute z-20 touch-none select-none ${selected ? 'outline-2 outline-dashed outline-pink-deep' : ''}`}
       style={{
         left: `${item.x}%`, top: `${item.y}%`,
         transform: `translate(-50%,-50%) rotate(${item.rotation}deg) scale(${item.scale})`,
@@ -53,6 +54,12 @@ export default function DraggablePhoto({ item, selected, onSelect, onUpdate }: P
         <img src={item.dataUrl} alt="Placed scrapbook photo" draggable={false}
           className="aspect-[4/3] w-full object-cover" />
       </div>
+      <button type="button" aria-label="Take this photo off the page"
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => { e.stopPropagation(); onRemove() }}
+        className={`absolute -right-2.5 -top-2.5 z-30 flex h-6 w-6 items-center justify-center rounded-full border-2 border-ink bg-[#ffd9d9] text-sm font-bold leading-none transition hover:rotate-90 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+        ×
+      </button>
     </div>
   )
 }

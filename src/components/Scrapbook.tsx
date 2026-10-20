@@ -75,7 +75,8 @@ export default function Scrapbook({ photos, placed, onPlacedChange, onBack }: {
         {items.map((item) => (
           <DraggablePhoto key={item.instanceId} item={item} selected={selectedId === item.instanceId}
             onSelect={() => { setActivePage(num); setSelectedId(item.instanceId) }}
-            onUpdate={(patch) => updatePhoto(num, item.instanceId, patch)} />
+            onUpdate={(patch) => updatePhoto(num, item.instanceId, patch)}
+            onRemove={() => removePhoto(num, item.instanceId)} />
         ))}
         {activePage === num && (
           <div className="pointer-events-none absolute inset-0 z-30 border-[3px] border-pink-mid/80" />
