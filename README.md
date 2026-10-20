@@ -1,32 +1,67 @@
-# React + TypeScript + Vite
+# Cut of Four <img src="assets/pixel-camera.png" height="34" alt="Pink pixel camera" />
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A cute photobooth that lives in your browser.
 
-Currently, two official plugins are available:
+Take webcam photos, pick a pretty frame, add words and stickers, then save the final picture.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## How to use it
 
-## React Compiler
+1. Click the curtain that says **enter →**
+2. Allow camera access when your browser asks
+3. Pick a filter and a frame
+4. Click **take a photo!** and pose
+5. Add words and stickers
+6. Click **download this frame ♡** to save it
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Fun things to try
 
-## Expanding the Oxlint configuration
+• Retake just one photo in the strip if you blinked
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+• Drag stickers around and make them bigger or smaller
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+• Deleted a photo by accident? Press the undo button
+
+• Your photos never leave your browser unless you download and share them
+
+***
+
+## For Developers
+
+Run it locally:
+
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Then open http://localhost:5173
+
+Build it:
+
+```bash
+npm run build
+```
+
+### Built with
+
+• React and TypeScript
+
+• Vite
+
+• Tailwind CSS
+
+• Google Fonts: Caveat, Gaegu, and Cormorant Garamond
+
+### Where things live
+
+• `src/App.tsx` controls the cover page and the booth
+
+• `src/components` has the camera screen, the frames, and the stickers
+
+• `src/data` has the filters, frames, and sticker lists
+
+• `src/hooks` has the webcam logic
+
+• `src/utils` has the PNG download helper
+
+• `public` has the pink pixel cursors
