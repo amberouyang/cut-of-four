@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { captureFrame, useWebcam } from '../hooks/useWebcam'
 import { FILTERS } from '../data/filters'
 import { FRAMES, type FrameId } from '../data/frames'
@@ -6,6 +6,7 @@ import FramePreview, { DEFAULT_TEXTS, type FrameTexts } from './FramePreview'
 import StickerDrawer from './StickerDrawer'
 import DraggableSticker from './DraggableSticker'
 import { stickerById, type StickerInstance } from '../data/stickers'
+import { exportNodePng } from '../utils/exportPng'
 
 let stickerUid = 0
 import { Bow, HeartDoodle } from './doodles'
@@ -78,6 +79,15 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         await countdownOnce(); snapInto(0)
       }
     } finally { setShooting(false); setShotLabel('') }
+  }
+  const frameRef = useRef<HTMLDivElement | null>(null)
+  const [exporting, setExporting] = useState(false)
+  async function doExport() {
+    if (!frameRef.current || exporting) return
+    setSelectedStickerId(null) // keep the selection outline out of the png
+    await new Promise((r) => setTimeout(r, 60))
+    setExporting(true)
+    try { await exportNodePng(frameRef.current, frame) } finally { setExporting(false) }
   }
   const clearSlot = (index: number) =>
     setAllPhotos((prev) => ({ ...prev, [frame]: prev[frame].map((p, i) => (i === index ? null : p)) }))
@@ -162,7 +172,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             ))}
           </div>
           <div className="mt-4 flex w-full justify-center">
-            <div className="relative" onPointerDown={() => setSelectedStickerId(null)}>
+            <div className="relative" ref={frameRef} onPointerDown={() => setSelectedStickerId(null)}>
               <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts} />
               {stickers.map((s) => (
                 <DraggableSticker key={s.instanceId} inst={s} selected={selectedStickerId === s.instanceId}
@@ -222,6 +232,12 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               ))}
             </div>
           </div>
+
+          <button onClick={doExport} disabled={exporting}
+            className="ink ink-shadow mt-5 bg-ink px-7 py-2.5 font-hand text-3xl font-bold text-white transition hover:-rotate-1 disabled:opacity-50">
+            {exporting ? 'making your png…' : 'download this frame ♡'}
+          </button>
+          <p className="mt-1.5 text-xs opacity-60">photos + filter + stickers + words, at 3× size</p>
         </div>
       </div>
 
