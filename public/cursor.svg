@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 24 32">
-  <!-- pink pixel arrow — padded viewBox so the outline never clips -->
-  <path shape-rendering="crispEdges" fill="#ffe3ef" stroke="#cf4a84" stroke-width="1.4" stroke-linejoin="miter"
-    d="M5 3 L5 26 L10 21 L13 29 L17 27 L14 19 L21 19 Z"/>
-  <path shape-rendering="crispEdges" fill="#f9a8c9" d="M5 3 h3 v20 l-3 3 z"/>
-</svg>
