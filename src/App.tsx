@@ -5,7 +5,7 @@ const SWATCHES = [
 
 export default function App() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-blush font-doodle text-ink">
+    <div className="paper-bg flex min-h-screen flex-col items-center justify-center gap-2 font-doodle text-ink">
       <p className="font-hand text-6xl font-bold">cut of four</p>
       <p className="text-xl">a little photobooth, drawn by hand ♡</p>
       <p className="font-romantic text-2xl italic">Love is Blooming</p>

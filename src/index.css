@@ -12,3 +12,14 @@
   --font-doodle: "Gaegu", cursive;
   --font-romantic: "Cormorant Garamond", serif;
 }
+
+/* graph-paper background, like the moodboard's last image */
+.paper-bg {
+  background-color: var(--color-cream);
+  background-image:
+    linear-gradient(rgba(249, 168, 201, .16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 168, 201, .16) 1px, transparent 1px),
+    linear-gradient(rgba(35, 35, 35, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 35, 35, .045) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+}
