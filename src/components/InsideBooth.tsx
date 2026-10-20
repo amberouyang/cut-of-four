@@ -1,9 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useWebcam } from '../hooks/useWebcam'
+import { FILTERS } from '../data/filters'
 import { Bow, HeartDoodle } from './doodles'
 
 export default function InsideBooth({ onExit }: { onExit: () => void }) {
   const cam = useWebcam()
+  const [filter, setFilter] = useState(FILTERS[0])
 
   // start the camera as soon as you step inside; stop it when you leave (hook cleanup)
   useEffect(() => { cam.start() }, [cam.start])
@@ -19,8 +21,8 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
       <div className="ink ink-shadow mt-4 w-full max-w-[560px] bg-white p-3">
         <div className="ink-sm relative aspect-[4/3] overflow-hidden bg-blush">
           <video ref={cam.videoRef} autoPlay playsInline muted
-            className="-scale-x-100 h-full w-full object-cover"
-            style={{ display: cam.status === 'on' ? 'block' : 'none' }} />
+            className="-scale-x-100 h-full w-full object-cover transition-[filter] duration-300"
+            style={{ display: cam.status === 'on' ? 'block' : 'none', filter: filter.css }} />
           {cam.status !== 'on' && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
               <p className="max-w-xs text-lg leading-snug">
@@ -40,6 +42,17 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             </span>
           )}
         </div>
+      </div>
+
+      {/* filter chips */}
+      <div className="mt-4 flex max-w-[560px] flex-wrap justify-center gap-2">
+        {FILTERS.map((f) => (
+          <button key={f.id} onClick={() => setFilter(f)}
+            className={`ink-sm flex items-center gap-2 px-3 py-1.5 text-sm font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+            <span className="inline-block h-4 w-6 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
+            {f.name}
+          </button>
+        ))}
       </div>
 
       <button onClick={onExit}
