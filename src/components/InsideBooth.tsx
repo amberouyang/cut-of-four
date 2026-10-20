@@ -325,7 +325,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
       </button>
 
       <p className="mt-6 font-hand text-3xl font-bold">pick a frame ♡</p>
-      <div className="mt-2 grid w-full max-w-[560px] grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mt-2 grid w-full max-w-[920px] grid-cols-2 gap-2 sm:grid-cols-4">
         {FRAMES.map((f) => (
           <button key={f.id} onClick={() => selectFrame(f.id)}
             className={`ink-sm px-3 py-2 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
@@ -335,8 +335,11 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         ))}
       </div>
 
-      <div className="ink ink-shadow mt-4 w-full max-w-[560px] bg-white p-3">
-        <div className="ink-sm relative aspect-[4/3] overflow-hidden bg-blush">
+      <div className="mt-4 grid items-start justify-center gap-8 lg:grid-cols-[560px_360px]">
+        {/* ── left: camera ── */}
+        <div className="flex flex-col items-center">
+          <div className="ink ink-shadow w-full bg-white p-3">
+            <div className="ink-sm relative aspect-[4/3] overflow-hidden bg-blush">
           <video ref={cam.videoRef} autoPlay playsInline muted
             className="-scale-x-100 h-full w-full object-cover transition-[filter] duration-300"
             style={{ display: cam.status === 'on' ? 'block' : 'none', filter: filter.css }} />
@@ -389,32 +392,36 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         </button>
       )}
 
-      <div className="mt-4 flex flex-wrap justify-center gap-2">
-        {FILTERS.map((f) => (
-          <button key={f.id} onClick={() => setFilter(f)}
-            className={`ink-sm flex items-center gap-2 px-3 py-1.5 text-sm font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
-            <span className="inline-block h-4 w-6 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
-            {f.name}
-          </button>
-        ))}
-      </div>
-
-      {filled > 0 && (
-        <>
-          <div className="mt-5 flex items-end justify-center gap-2">
-            {photos.map((p, i) => (
-              p
-                ? <img key={i} src={p} alt={`Photo ${i + 1}`} style={{ filter: filter.css }}
-                    className="ink-sm h-[54px] w-[72px] object-cover" />
-                : <span key={i} className="ink-sm flex h-[54px] w-[72px] items-center justify-center bg-white font-hand text-xl text-ink/40">{i + 1}</span>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {FILTERS.map((f) => (
+              <button key={f.id} onClick={() => setFilter(f)}
+                className={`ink-sm flex items-center gap-2 px-3 py-1.5 text-sm font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+                <span className="inline-block h-4 w-6 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
+                {f.name}
+              </button>
             ))}
           </div>
-          <button onClick={() => setView('decorate')}
-            className="ink ink-shadow mt-4 bg-ink px-7 py-2.5 font-hand text-3xl font-bold text-white transition hover:-rotate-1">
-            decorate your photo →
-          </button>
-        </>
-      )}
+        </div>
+
+        {/* ── right: live frame preview ── */}
+        <div className="flex flex-col items-center">
+          <p className="font-hand text-3xl font-bold">your frame so far ♡</p>
+          <div className="relative mt-3">
+            <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts}
+              selectedSlot={selectedSlot}
+              onSelectSlot={(i) => setSelectedSlot((cur) => (cur === i ? null : i))} />
+          </div>
+          <p className="mt-3 max-w-[300px] text-center text-sm opacity-60">
+            {filled}/{photoCount} filled — tap a photo in the frame to retake just that one
+          </p>
+          {filled > 0 && (
+            <button onClick={() => setView('decorate')}
+              className="ink ink-shadow mt-4 bg-ink px-7 py-2.5 font-hand text-3xl font-bold text-white transition hover:-rotate-1">
+              decorate your photo →
+            </button>
+          )}
+        </div>
+      </div>
 
       <button onClick={onExit}
         className="ink-sm mt-6 bg-white px-5 py-2 font-bold transition hover:rotate-1">
