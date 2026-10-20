@@ -13,9 +13,11 @@ export function StickerVisual({ stickerId, size = 40 }: { stickerId: string; siz
   if (d.kind === 'emoji') return <span style={{ fontSize: size * 0.85, lineHeight: 1 }}>{d.content}</span>
   if (d.kind === 'date')
     return <span className="font-mono font-bold text-[#ffb340]" style={{ fontSize: size * 0.42, textShadow: '0 1px 4px rgba(0,0,0,.55)' }}>{d.content}</span>
+  // drawer previews are tiny: let the badge text wrap so its whole border fits the cell
+  const small = size < 25
   return (
-    <span className="ink-sm inline-block whitespace-nowrap bg-white px-2.5 py-1 font-doodle font-bold"
-      style={{ fontSize: size * 0.34 }}>{d.content}</span>
+    <span className={`ink-sm inline-block bg-white font-doodle font-bold ${small ? 'whitespace-normal text-center leading-tight' : 'whitespace-nowrap px-2.5 py-1'}`}
+      style={{ fontSize: size * 0.34, ...(small ? { maxWidth: 62, padding: '2px 5px' } : {}) }}>{d.content}</span>
   )
 }
 
@@ -26,8 +28,10 @@ export default function StickerDrawer({ onPick }: { onPick: (stickerId: string) 
       <div className="mt-2 grid grid-cols-4 gap-2">
         {STICKERS.map((s) => (
           <button key={s.id} onClick={() => onPick(s.id)} title={s.label}
-            className="ink-sm flex min-h-[54px] flex-col items-center justify-center gap-0.5 bg-blush px-1 py-1.5 transition hover:-rotate-2 hover:bg-pink-soft">
-            <StickerVisual stickerId={s.id} size={30} />
+            className="ink-sm flex min-h-[54px] flex-col items-center justify-center gap-0.5 overflow-hidden bg-blush px-1 py-1.5 transition hover:-rotate-2 hover:bg-pink-soft">
+            <span className="flex max-w-full items-center justify-center overflow-hidden">
+              <StickerVisual stickerId={s.id} size={s.kind === 'badge' ? 17 : s.kind === 'date' ? 20 : 30} />
+            </span>
             <span className="text-[10px] font-bold leading-none">{s.label}</span>
           </button>
         ))}
