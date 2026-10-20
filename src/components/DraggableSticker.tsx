@@ -15,6 +15,7 @@ export default function DraggableSticker({ inst, selected, onSelect, onUpdate }:
 
   return (
     <div
+      data-sticker="true"
       role="button" aria-label="Sticker — drag to move"
       className={`absolute z-20 touch-none select-none ${selected ? 'rounded outline-2 outline-dashed outline-pink-deep' : ''}`}
       style={{

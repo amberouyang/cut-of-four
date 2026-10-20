@@ -127,6 +127,15 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
   // start the camera as soon as you step inside; stop it when you leave (hook cleanup)
   useEffect(() => { cam.start() }, [cam.start])
 
+  // clicking anywhere outside a sticker (or its control card) removes the pink outline
+  useEffect(() => {
+    const onDown = (e: PointerEvent) => {
+      if (!(e.target as Element).closest('[data-sticker], [data-sticker-controls]')) setSelectedStickerId(null)
+    }
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
+  }, [])
+
   return (
     <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
       <div className="flex items-center gap-2">
@@ -229,7 +238,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           </div>
 
           {selectedSticker && (
-            <div className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
+            <div data-sticker-controls="true" className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
               <p className="flex items-center justify-between font-hand text-2xl font-bold">
                 {stickerById(selectedSticker.stickerId).label} sticker
                 <button onClick={() => peelSticker(selectedSticker.instanceId)}
