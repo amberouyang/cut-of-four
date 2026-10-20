@@ -66,6 +66,9 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [undoStack])
+  // for multi-photo frames: a slot tapped in the strip becomes the single-retake target
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null)
+  const selectFrame = (id: FrameId) => { setFrame(id); setSelectedSlot(null) }
   const photos = allPhotos[frame]
   const photoCount = FRAMES.find((f) => f.id === frame)!.photoCount
   const filled = photos.filter(Boolean).length
@@ -91,15 +94,18 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     if (cam.status !== 'on' || shooting) return
     setShooting(true)
     try {
-      if (photoCount === 4) {
+      if (photoCount === 4 && selectedSlot === null) {
         // strip: automated 4-shot burst, countdown before each
         for (let i = 0; i < 4; i++) {
           setShotLabel(`shot ${i + 1} of 4`)
           await countdownOnce(); snapInto(i); await sleep(420)
         }
       } else {
-        setShotLabel('say cheese!')
-        await countdownOnce(); snapInto(0)
+        // single shot — into the tapped slot on multi-photo frames, or the only slot
+        const target = photoCount === 4 ? (selectedSlot ?? 0) : 0
+        setShotLabel(photoCount === 4 ? `retaking photo ${target + 1}` : 'say cheese!')
+        await countdownOnce(); snapInto(target)
+        setSelectedSlot(null)
       }
     } finally { setShooting(false); setShotLabel('') }
   }
@@ -168,10 +174,16 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
 
           <button onClick={takePhoto} disabled={cam.status !== 'on' || shooting}
             className="ink ink-shadow mt-5 bg-pink-mid px-8 py-2.5 font-hand text-3xl font-bold transition hover:-rotate-1 disabled:opacity-40">
-            {shooting ? (shotLabel || 'get ready…') : photoCount === 4 ? 'start 4-shot burst!' : 'take a photo!'}
+            {shooting ? (shotLabel || 'get ready…')
+              : selectedSlot !== null ? `retake photo ${selectedSlot + 1}!`
+              : photoCount === 4 ? 'start 4-shot burst!' : 'take a photo!'}
           </button>
-          <p className="mt-2 text-sm opacity-60">
-            {photoCount === 4 ? '4 shots in a row, countdown before each' : 'one shot into this frame'} · {filled}/{photoCount} filled — click a filled slot to clear it
+          <p className="mt-2 max-w-[480px] text-center text-sm opacity-60">
+            {selectedSlot !== null
+              ? <>photo {selectedSlot + 1} is picked — the shutter replaces <b>only that one</b> (old one goes to undo). <button className="underline" onClick={() => setSelectedSlot(null)}>cancel</button></>
+              : photoCount === 4
+                ? '4 shots in a row, countdown before each — or tap any single photo in the strip to retake just that one'
+                : 'one shot into this frame'} · {filled}/{photoCount} filled
           </p>
           {undoStack.length > 0 && (
             <button onClick={undoLastPhoto}
@@ -196,7 +208,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           <p className="font-hand text-3xl font-bold">pick a frame ♡</p>
           <div className="mt-2 grid grid-cols-2 gap-2">
             {FRAMES.map((f) => (
-              <button key={f.id} onClick={() => setFrame(f.id)}
+              <button key={f.id} onClick={() => selectFrame(f.id)}
                 className={`ink-sm px-3 py-2 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
                 <span className="block text-[15px] font-bold leading-tight">{f.name}</span>
                 <span className="block text-xs opacity-60">{f.note}</span>
@@ -205,7 +217,9 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           </div>
           <div className="mt-4 flex w-full justify-center">
             <div className="relative" ref={frameRef} onPointerDown={() => setSelectedStickerId(null)}>
-              <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts} />
+              <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts}
+                selectedSlot={selectedSlot}
+                onSelectSlot={(i) => setSelectedSlot((cur) => (cur === i ? null : i))} />
               {stickers.map((s) => (
                 <DraggableSticker key={s.instanceId} inst={s} selected={selectedStickerId === s.instanceId}
                   onSelect={() => setSelectedStickerId(s.instanceId)}

@@ -7,21 +7,36 @@ interface SlotProps {
   photo?: string | null
   filterCss?: string
   onClear?: () => void
+  selected?: boolean
+  onSelect?: () => void
 }
 
-/** A photo slot — empty placeholder, or the captured shot (click a filled slot to clear it). */
-function Slot({ className = '', label = '( photo )', photo, filterCss, onClear }: SlotProps) {
+/** A photo slot — tap it to target it for a single retake (multi-photo frames), × clears it. */
+function Slot({ className = '', label = '( photo )', photo, filterCss, onClear, selected, onSelect }: SlotProps) {
   if (photo) {
     return (
-      <div className={`group relative overflow-hidden border-2 border-ink ${className}`} onClick={onClear} title="click to clear this slot">
+      <div className={`group relative overflow-hidden border-2 border-ink ${selected ? 'outline outline-[3px] outline-pink-deep' : ''} ${className}`}
+        onClick={onSelect} title={onSelect ? 'tap to retake just this photo' : undefined}>
         <img src={photo} alt="Captured" className="h-full w-full object-cover" style={{ filter: filterCss }} />
-        <span className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-white/90 text-xs font-bold group-hover:flex">×</span>
+        <span className="absolute right-1 top-1 hidden gap-1 group-hover:flex">
+          {onSelect && (
+            <button aria-label="Retake this photo" title="retake this one"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-pink-mid text-[11px] font-bold"
+              onClick={(e) => { e.stopPropagation(); onSelect() }}>↻</button>
+          )}
+          <button aria-label="Clear this photo" title="clear this photo"
+            className="flex h-5 w-5 items-center justify-center rounded-full bg-white/90 text-xs font-bold"
+            onClick={(e) => { e.stopPropagation(); onClear?.() }}>×</button>
+        </span>
+        {selected && <span className="absolute bottom-1 left-1 rounded-full bg-pink-deep px-2 py-0.5 text-[10px] font-bold text-white">retaking this one ↻</span>}
       </div>
     )
   }
   return (
-    <div className={`flex items-center justify-center border-2 border-ink bg-white ${className}`}>
+    <div className={`relative flex items-center justify-center border-2 border-ink bg-white ${selected ? 'outline outline-[3px] outline-pink-deep' : ''} ${className}`}
+      onClick={onSelect}>
       <span className="font-hand text-2xl text-ink/50">{label}</span>
+      {selected && <span className="absolute bottom-1 left-1 rounded-full bg-pink-deep px-2 py-0.5 text-[10px] font-bold text-white">shooting here ♡</span>}
     </div>
   )
 }
@@ -53,9 +68,11 @@ interface PreviewProps {
   filterCss?: string
   onClearSlot?: (index: number) => void
   texts?: FrameTexts
+  selectedSlot?: number | null
+  onSelectSlot?: (index: number) => void
 }
 
-function Strip({ photos = [], filterCss, onClearSlot, texts = DEFAULT_TEXTS }: PreviewProps) {
+function Strip({ photos = [], filterCss, onClearSlot, texts = DEFAULT_TEXTS, selectedSlot, onSelectSlot }: PreviewProps) {
   return (
     <div className="mx-auto w-[240px] bg-[#fff7fa] px-4 pb-5 pt-3 shadow-[0_10px_30px_rgba(35,35,35,.18)] ring-1 ring-ink/20">
       <p className="font-romantic text-center text-[15px] italic leading-tight text-ink/80">
@@ -64,7 +81,8 @@ function Strip({ photos = [], filterCss, onClearSlot, texts = DEFAULT_TEXTS }: P
       <div className="relative mt-2 flex flex-col gap-2.5">
         <HeartDoodle size={26} className="absolute -left-3 -top-3 z-10 -rotate-12" />
         {[0, 1, 2, 3].map((i) => (
-          <Slot key={i} className="aspect-[4/3] w-full" label="" photo={photos[i]} filterCss={filterCss} onClear={() => onClearSlot?.(i)} />
+          <Slot key={i} className="aspect-[4/3] w-full" label="" photo={photos[i]} filterCss={filterCss}
+            onClear={() => onClearSlot?.(i)} selected={selectedSlot === i} onSelect={() => onSelectSlot?.(i)} />
         ))}
         <Sparkle size={24} className="absolute -right-2 top-[38%] z-10" />
       </div>
