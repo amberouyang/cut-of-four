@@ -2,6 +2,12 @@
 @import "tailwindcss";
 
 @theme {
+  --color-cream: #fffafc;
+  --color-blush: #ffeef5;
+  --color-pink-soft: #ffd6e7;
+  --color-pink-mid: #f9a8c9;
+  --color-pink-deep: #c2437f;
+  --color-ink: #232323;
   --font-hand: "Caveat", cursive;
   --font-doodle: "Gaegu", cursive;
   --font-romantic: "Cormorant Garamond", serif;
