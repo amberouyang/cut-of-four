@@ -23,3 +23,15 @@
     linear-gradient(90deg, rgba(35, 35, 35, .045) 1px, transparent 1px);
   background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
 }
+
+/* hand-drawn wobbly ink borders — uneven radii read as "drawn", not generated */
+.ink {
+  border: 2.5px solid var(--color-ink);
+  border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px;
+}
+.ink-sm {
+  border: 2px solid var(--color-ink);
+  border-radius: 125px 12px 115px 12px / 12px 115px 12px 125px;
+}
+.ink-shadow { box-shadow: 3px 4px 0 rgba(35, 35, 35, .9); }
+.ink-shadow-soft { box-shadow: 2px 3px 0 rgba(35, 35, 35, .18); }

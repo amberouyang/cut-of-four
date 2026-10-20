@@ -5,17 +5,19 @@ const SWATCHES = [
 
 export default function App() {
   return (
-    <div className="paper-bg flex min-h-screen flex-col items-center justify-center gap-2 font-doodle text-ink">
-      <p className="font-hand text-6xl font-bold">cut of four</p>
-      <p className="text-xl">a little photobooth, drawn by hand ♡</p>
-      <p className="font-romantic text-2xl italic">Love is Blooming</p>
-      <div className="mt-4 flex gap-2">
-        {SWATCHES.map(([name, bg]) => (
-          <div key={name} className="text-center">
-            <div className={`h-10 w-14 rounded-lg border border-ink/20 ${bg}`} />
-            <p className="mt-1 text-xs">{name}</p>
-          </div>
-        ))}
+    <div className="paper-bg flex min-h-screen items-center justify-center font-doodle text-ink">
+      <div className="ink ink-shadow-soft bg-white/80 px-10 py-8 text-center">
+        <p className="font-hand text-6xl font-bold">cut of four</p>
+        <p className="mt-1 text-xl">a little photobooth, drawn by hand ♡</p>
+        <p className="font-romantic mt-1 text-2xl italic">Love is Blooming</p>
+        <div className="mt-5 flex justify-center gap-2">
+          {SWATCHES.map(([name, bg]) => (
+            <div key={name} className="text-center">
+              <div className={`ink-sm h-10 w-14 ${bg}`} />
+              <p className="mt-1 text-xs">{name}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
