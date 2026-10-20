@@ -11,19 +11,49 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
   const [frame, setFrame] = useState<FrameId>('strip')
   const [countdown, setCountdown] = useState<number | null>(null)
   const [flash, setFlash] = useState(false)
-  const [photo, setPhoto] = useState<string | null>(null)
+  const [shooting, setShooting] = useState(false)
+  const [shotLabel, setShotLabel] = useState('')
+  // photos are kept per frame, so switching frames doesn't lose your shots
+  const [allPhotos, setAllPhotos] = useState<Record<FrameId, (string | null)[]>>({
+    strip: [null, null, null, null], 'student-id': [null], music: [null], instagram: [null],
+  })
+  const photos = allPhotos[frame]
+  const photoCount = FRAMES.find((f) => f.id === frame)!.photoCount
+  const filled = photos.filter(Boolean).length
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-  async function takePhoto() {
-    if (cam.status !== 'on' || countdown !== null || !cam.videoRef.current) return
+  async function countdownOnce() {
     for (const n of [3, 2, 1]) { setCountdown(n); await sleep(880) }
     setCountdown(null)
-    const shot = captureFrame(cam.videoRef.current)
-    if (shot) {
-      setPhoto(shot)
-      setFlash(true); window.setTimeout(() => setFlash(false), 480)
-    }
   }
+  function snapInto(index: number) {
+    if (!cam.videoRef.current) return
+    const shot = captureFrame(cam.videoRef.current)
+    if (!shot) return
+    setAllPhotos((prev) => ({
+      ...prev,
+      [frame]: prev[frame].map((p, i) => (i === index ? shot : p)),
+    }))
+    setFlash(true); window.setTimeout(() => setFlash(false), 480)
+  }
+  async function takePhoto() {
+    if (cam.status !== 'on' || shooting) return
+    setShooting(true)
+    try {
+      if (photoCount === 4) {
+        // strip: automated 4-shot burst, countdown before each
+        for (let i = 0; i < 4; i++) {
+          setShotLabel(`shot ${i + 1} of 4`)
+          await countdownOnce(); snapInto(i); await sleep(420)
+        }
+      } else {
+        setShotLabel('say cheese!')
+        await countdownOnce(); snapInto(0)
+      }
+    } finally { setShooting(false); setShotLabel('') }
+  }
+  const clearSlot = (index: number) =>
+    setAllPhotos((prev) => ({ ...prev, [frame]: prev[frame].map((p, i) => (i === index ? null : p)) }))
 
   // start the camera as soon as you step inside; stop it when you leave (hook cleanup)
   useEffect(() => { cam.start() }, [cam.start])
@@ -73,20 +103,13 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             </div>
           </div>
 
-          <button onClick={takePhoto} disabled={cam.status !== 'on' || countdown !== null}
+          <button onClick={takePhoto} disabled={cam.status !== 'on' || shooting}
             className="ink ink-shadow mt-5 bg-pink-mid px-8 py-2.5 font-hand text-3xl font-bold transition hover:-rotate-1 disabled:opacity-40">
-            {countdown !== null ? 'get ready…' : 'take a photo!'}
+            {shooting ? (shotLabel || 'get ready…') : photoCount === 4 ? 'start 4-shot burst!' : 'take a photo!'}
           </button>
-
-          {photo && (
-            <div className="ink ink-shadow-soft mt-5 w-full max-w-[300px] bg-white p-2.5 text-center">
-              <img src={photo} alt="Your shot" className="ink-sm w-full" style={{ filter: filter.css }} />
-              <p className="mt-1.5 flex items-center justify-center gap-2 text-sm font-bold">
-                your shot ♡
-                <button onClick={() => setPhoto(null)} className="ink-sm bg-blush px-2.5 py-0.5 text-xs">retake</button>
-              </p>
-            </div>
-          )}
+          <p className="mt-2 text-sm opacity-60">
+            {photoCount === 4 ? '4 shots in a row, countdown before each' : 'one shot into this frame'} · {filled}/{photoCount} filled — click a filled slot to clear it
+          </p>
 
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {FILTERS.map((f) => (
@@ -107,12 +130,12 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               <button key={f.id} onClick={() => setFrame(f.id)}
                 className={`ink-sm px-3 py-2 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
                 <span className="block text-[15px] font-bold leading-tight">{f.name}</span>
-                <span className="block text-xs opacity-60">{f.note} · empty for now</span>
+                <span className="block text-xs opacity-60">{f.note}</span>
               </button>
             ))}
           </div>
           <div className="mt-4 flex w-full justify-center">
-            <FramePreview frame={frame} />
+            <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} />
           </div>
         </div>
       </div>
