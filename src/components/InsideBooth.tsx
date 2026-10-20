@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { captureFrame, useWebcam } from '../hooks/useWebcam'
 import { FILTERS } from '../data/filters'
 import { FRAMES, type FrameId } from '../data/frames'
-import FramePreview from './FramePreview'
+import FramePreview, { DEFAULT_TEXTS, type FrameTexts } from './FramePreview'
 import { Bow, HeartDoodle } from './doodles'
 
 export default function InsideBooth({ onExit }: { onExit: () => void }) {
@@ -17,6 +17,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
   const [allPhotos, setAllPhotos] = useState<Record<FrameId, (string | null)[]>>({
     strip: [null, null, null, null], 'student-id': [null], music: [null], instagram: [null],
   })
+  const [texts, setTexts] = useState<FrameTexts>(DEFAULT_TEXTS)
   const photos = allPhotos[frame]
   const photoCount = FRAMES.find((f) => f.id === frame)!.photoCount
   const filled = photos.filter(Boolean).length
@@ -135,7 +136,35 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             ))}
           </div>
           <div className="mt-4 flex w-full justify-center">
-            <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} />
+            <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts} />
+          </div>
+
+          {/* text editor for the chosen frame */}
+          <div className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
+            <p className="font-hand text-2xl font-bold">write on it ✎</p>
+            <div className="mt-2 flex flex-col gap-2">
+              {({
+                strip: [
+                  ['stripHeader', 'top words'], ['stripFooter', 'big words at the bottom'],
+                ],
+                'student-id': [
+                  ['idName', 'Name'], ['idClass', 'Class'], ['idSchool', 'School'], ['idSign', 'Sign'],
+                ],
+                music: [
+                  ['songTitle', 'song title'], ['songArtist', 'artist'],
+                ],
+                instagram: [
+                  ['igUser', 'username'], ['igCaption', 'caption'],
+                ],
+              }[frame] as [keyof FrameTexts, string][]).map(([key, label]) => (
+                <label key={key} className="flex items-center gap-2 text-sm font-bold">
+                  <span className="w-28 shrink-0">{label}</span>
+                  <input value={texts[key]} placeholder={label}
+                    onChange={(e) => setTexts((t) => ({ ...t, [key]: e.target.value }))}
+                    className="ink-sm min-w-0 flex-1 bg-blush px-2.5 py-1.5 font-doodle outline-none placeholder:text-ink/30" />
+                </label>
+              ))}
+            </div>
           </div>
         </div>
       </div>
