@@ -7,6 +7,8 @@ import StickerDrawer from './StickerDrawer'
 import DraggableSticker from './DraggableSticker'
 import { stickerById, type StickerInstance } from '../data/stickers'
 import { exportNodePng } from '../utils/exportPng'
+import PhotoAlbum from './PhotoAlbum'
+import { loadAlbum, removeFromAlbum, saveToAlbum, type AlbumPhoto } from '../utils/album'
 
 let stickerUid = 0
 import { Bow, HeartDoodle } from './doodles'
@@ -27,6 +29,14 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
   const [allStickers, setAllStickers] = useState<Record<FrameId, StickerInstance[]>>({
     strip: [], 'student-id': [], music: [], instagram: [],
   })
+  // photo shelf: every shot is kept in the browser (see utils/album)
+  const [view, setView] = useState<'booth' | 'album'>('booth')
+  const [albumPhotos, setAlbumPhotos] = useState<AlbumPhoto[]>([])
+  useEffect(() => { loadAlbum().then(setAlbumPhotos).catch(() => {}) }, [])
+  const deleteAlbumPhoto = (id: number) => {
+    removeFromAlbum(id).catch(() => {})
+    setAlbumPhotos((prev) => prev.filter((p) => p.id !== id))
+  }
   const stickers = allStickers[frame]
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null)
   const selectedSticker = stickers.find((s) => s.instanceId === selectedStickerId) ?? null
@@ -88,6 +98,8 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
       ...prev,
       [frame]: prev[frame].map((p, i) => (i === index ? shot : p)),
     }))
+    // and keep a copy on the photo shelf
+    saveToAlbum(shot).then((saved) => setAlbumPhotos((prev) => [saved, ...prev])).catch(() => {})
     setFlash(true); window.setTimeout(() => setFlash(false), 480)
   }
   async function takePhoto() {
@@ -124,8 +136,11 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     setAllPhotos((prev) => ({ ...prev, [frame]: prev[frame].map((p, i) => (i === index ? null : p)) }))
   }
 
-  // start the camera as soon as you step inside; stop it when you leave (hook cleanup)
-  useEffect(() => { cam.start() }, [cam.start])
+  // camera runs in the booth, rests while you browse the photo shelf
+  useEffect(() => {
+    if (view === 'booth') cam.start()
+    else cam.stop()
+  }, [view, cam.start, cam.stop])
 
   // clicking anywhere outside a sticker (or its control card) removes the pink outline
   useEffect(() => {
@@ -136,6 +151,14 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     return () => document.removeEventListener('pointerdown', onDown)
   }, [])
 
+  if (view === 'album') {
+    return (
+      <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
+        <PhotoAlbum photos={albumPhotos} onBack={() => setView('booth')} onDelete={deleteAlbumPhoto} />
+      </div>
+    )
+  }
+
   return (
     <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
       <div className="flex items-center gap-2">
@@ -143,6 +166,10 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         <h2 className="font-hand text-4xl font-bold">you're inside!</h2>
         <HeartDoodle size={24} />
       </div>
+      <button onClick={() => setView('album')}
+        className="ink-sm mt-3 bg-white px-4 py-1.5 font-bold transition hover:-rotate-1">
+        your photo shelf ♡ ({albumPhotos.length})
+      </button>
 
       <div className="mt-4 grid items-start justify-center gap-8 lg:grid-cols-[560px_360px]">
         {/* ── left: camera ── */}
