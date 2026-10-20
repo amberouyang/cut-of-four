@@ -251,6 +251,38 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               </button>
             ))}
           </div>
+
+          <div className="mt-5">
+            <StickerDrawer onPick={addSticker} />
+          </div>
+
+          {/* text editor for the chosen frame */}
+          <div className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
+            <p className="font-hand text-2xl font-bold">write on it ✎</p>
+            <div className="mt-2 flex flex-col gap-2">
+              {({
+                strip: [
+                  ['stripHeader', 'top words'], ['stripFooter', 'big words at the bottom'],
+                ],
+                'student-id': [
+                  ['idName', 'Name'], ['idClass', 'Class'], ['idSchool', 'School'], ['idSign', 'Sign'],
+                ],
+                music: [
+                  ['songTitle', 'song title'], ['songArtist', 'artist'],
+                ],
+                instagram: [
+                  ['igUser', 'username'], ['igCaption', 'caption'],
+                ],
+              }[frame] as [keyof FrameTexts, string][]).map(([key, label]) => (
+                <label key={key} className="flex items-center gap-2 text-sm font-bold">
+                  <span className="w-28 shrink-0">{label}</span>
+                  <input value={texts[key]} placeholder={label}
+                    onChange={(e) => setTexts((t) => ({ ...t, [key]: e.target.value }))}
+                    className="ink-sm min-w-0 flex-1 bg-blush px-2.5 py-1.5 font-doodle outline-none placeholder:text-ink/30" />
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ── right: frame picker ── */}
@@ -296,38 +328,6 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               <p className="mt-1 text-xs opacity-60">or drag it, and scroll on it to resize</p>
             </div>
           )}
-
-          <div className="mt-4">
-            <StickerDrawer onPick={addSticker} />
-          </div>
-
-          {/* text editor for the chosen frame */}
-          <div className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
-            <p className="font-hand text-2xl font-bold">write on it ✎</p>
-            <div className="mt-2 flex flex-col gap-2">
-              {({
-                strip: [
-                  ['stripHeader', 'top words'], ['stripFooter', 'big words at the bottom'],
-                ],
-                'student-id': [
-                  ['idName', 'Name'], ['idClass', 'Class'], ['idSchool', 'School'], ['idSign', 'Sign'],
-                ],
-                music: [
-                  ['songTitle', 'song title'], ['songArtist', 'artist'],
-                ],
-                instagram: [
-                  ['igUser', 'username'], ['igCaption', 'caption'],
-                ],
-              }[frame] as [keyof FrameTexts, string][]).map(([key, label]) => (
-                <label key={key} className="flex items-center gap-2 text-sm font-bold">
-                  <span className="w-28 shrink-0">{label}</span>
-                  <input value={texts[key]} placeholder={label}
-                    onChange={(e) => setTexts((t) => ({ ...t, [key]: e.target.value }))}
-                    className="ink-sm min-w-0 flex-1 bg-blush px-2.5 py-1.5 font-doodle outline-none placeholder:text-ink/30" />
-                </label>
-              ))}
-            </div>
-          </div>
 
           <button onClick={doExport} disabled={exporting}
             className="ink ink-shadow mt-5 bg-ink px-7 py-2.5 font-hand text-3xl font-bold text-white transition hover:-rotate-1 disabled:opacity-50">
