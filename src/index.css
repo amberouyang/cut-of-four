@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Gaegu:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap');
 @import "tailwindcss";
 
+/* pink pixel cursor everywhere */
+html, body, * { cursor: url('/cursor.svg') 5 3, auto !important; }
+/* pixel hand on anything clickable */
+a, button, [role="button"], input, select, textarea, label, summary {
+  cursor: url('/cursor-pointer.svg') 13 3, pointer !important;
+}
+
 @theme {
   --color-cream: #fffafc;
   --color-blush: #ffeef5;

@@ -18,6 +18,9 @@ export default function App() {
             </div>
           ))}
         </div>
+        <button className="ink-sm mt-5 bg-pink-soft px-5 py-2 font-bold transition hover:-rotate-1">
+          hover me — pixel hand ♡
+        </button>
       </div>
     </div>
   )
