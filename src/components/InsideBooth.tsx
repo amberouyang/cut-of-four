@@ -3,8 +3,9 @@ import { captureFrame, useWebcam } from '../hooks/useWebcam'
 import { FILTERS } from '../data/filters'
 import { FRAMES, type FrameId } from '../data/frames'
 import FramePreview, { DEFAULT_TEXTS, type FrameTexts } from './FramePreview'
-import StickerDrawer, { StickerVisual } from './StickerDrawer'
-import type { StickerInstance } from '../data/stickers'
+import StickerDrawer from './StickerDrawer'
+import DraggableSticker from './DraggableSticker'
+import { stickerById, type StickerInstance } from '../data/stickers'
 
 let stickerUid = 0
 import { Bow, HeartDoodle } from './doodles'
@@ -26,6 +27,10 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     strip: [], 'student-id': [], music: [], instagram: [],
   })
   const stickers = allStickers[frame]
+  const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null)
+  const selectedSticker = stickers.find((s) => s.instanceId === selectedStickerId) ?? null
+  const updateSticker = (id: string, patch: Partial<StickerInstance>) =>
+    setAllStickers((prev) => ({ ...prev, [frame]: prev[frame].map((s) => (s.instanceId === id ? { ...s, ...patch } : s)) }))
   const addSticker = (stickerId: string) => {
     const inst: StickerInstance = {
       instanceId: `st-${++stickerUid}`, stickerId,
@@ -33,9 +38,12 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
       scale: 1, rotation: Math.round(Math.random() * 20 - 10),
     }
     setAllStickers((prev) => ({ ...prev, [frame]: [...prev[frame], inst] }))
+    setSelectedStickerId(inst.instanceId)
   }
-  const peelSticker = (instanceId: string) =>
+  const peelSticker = (instanceId: string) => {
     setAllStickers((prev) => ({ ...prev, [frame]: prev[frame].filter((s) => s.instanceId !== instanceId) }))
+    setSelectedStickerId(null)
+  }
   const photos = allPhotos[frame]
   const photoCount = FRAMES.find((f) => f.id === frame)!.photoCount
   const filled = photos.filter(Boolean).length
@@ -154,17 +162,34 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             ))}
           </div>
           <div className="mt-4 flex w-full justify-center">
-            <div className="relative">
+            <div className="relative" onPointerDown={() => setSelectedStickerId(null)}>
               <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts} />
               {stickers.map((s) => (
-                <button key={s.instanceId} onClick={() => peelSticker(s.instanceId)} title="tap to peel off"
-                  className="absolute z-20 -translate-x-1/2 -translate-y-1/2 transition hover:scale-110"
-                  style={{ left: `${s.x}%`, top: `${s.y}%`, transform: `translate(-50%,-50%) rotate(${s.rotation}deg) scale(${s.scale})` }}>
-                  <StickerVisual stickerId={s.stickerId} size={44} />
-                </button>
+                <DraggableSticker key={s.instanceId} inst={s} selected={selectedStickerId === s.instanceId}
+                  onSelect={() => setSelectedStickerId(s.instanceId)}
+                  onUpdate={(patch) => updateSticker(s.instanceId, patch)} />
               ))}
             </div>
           </div>
+
+          {selectedSticker && (
+            <div className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
+              <p className="flex items-center justify-between font-hand text-2xl font-bold">
+                {stickerById(selectedSticker.stickerId).label} sticker
+                <button onClick={() => peelSticker(selectedSticker.instanceId)}
+                  className="ink-sm bg-[#ffd9d9] px-2.5 py-1 font-doodle text-xs font-bold">peel off ×</button>
+              </p>
+              <label className="mt-2 flex justify-between text-sm font-bold">size <span>{selectedSticker.scale.toFixed(2)}×</span></label>
+              <input type="range" min={0.45} max={2.4} step={0.05} value={selectedSticker.scale}
+                onChange={(e) => updateSticker(selectedSticker.instanceId, { scale: +e.target.value })}
+                className="w-full accent-[#c2437f]" />
+              <label className="mt-1 flex justify-between text-sm font-bold">tilt <span>{selectedSticker.rotation}°</span></label>
+              <input type="range" min={-90} max={90} step={1} value={selectedSticker.rotation}
+                onChange={(e) => updateSticker(selectedSticker.instanceId, { rotation: +e.target.value })}
+                className="w-full accent-[#c2437f]" />
+              <p className="mt-1 text-xs opacity-60">or drag it, and scroll on it to resize</p>
+            </div>
+          )}
 
           <div className="mt-4">
             <StickerDrawer onPick={addSticker} />
