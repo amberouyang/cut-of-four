@@ -9,6 +9,10 @@ A cute photobooth that lives in your browser.
 
 Take webcam photos, pick a pretty frame, add words and stickers, then save the final picture.
 
+<p align="center">
+  <img src="assets/landing-page.png" width="620" alt="The Cut of Four photobooth entrance" />
+</p>
+
 ## How to use it
 
 1. Click the curtain that says **enter →**
