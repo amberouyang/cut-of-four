@@ -194,7 +194,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           ← take more photos
         </button>
 
-        <div className="mt-5 grid items-start justify-center gap-8 lg:grid-cols-[auto_360px]">
+        <div className="mt-5 grid items-stretch justify-center gap-8 lg:grid-cols-[auto_360px]">
           {/* ── the finished frame ── */}
           <div className="flex flex-col items-center">
             <div className="relative" ref={frameRef} onPointerDown={() => setSelectedStickerId(null)}>
@@ -224,6 +224,9 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
                 ↩ undo — bring that photo back ({undoStack.length})
               </button>
             )}
+
+            {/* spacer: pushes "write on it" down so its bottom lines up with the sticker drawer's bottom */}
+            <div className="flex-1" />
 
             {/* text editor — right under the photo it belongs to */}
             <div className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
@@ -267,41 +270,44 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               ))}
             </div>
 
+            {/* spacer: pushes the drawer down so its bottom lines up with "write on it" */}
+            <div className="flex-1" />
+
             <div className="mt-4">
               <StickerDrawer onPick={addSticker} />
             </div>
-
-            {selectedSticker && (
-              <div data-sticker-controls="true" className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
-                <p className="flex items-center justify-between font-hand text-2xl font-bold">
-                  {stickerById(selectedSticker.stickerId).label} sticker
-                  <button onClick={() => peelSticker(selectedSticker.instanceId)}
-                    className="ink-sm bg-[#ffd9d9] px-2.5 py-1 font-doodle text-xs font-bold">peel off ×</button>
-                </p>
-                <label className="mt-2 flex justify-between text-sm font-bold">size <span>{selectedSticker.scale.toFixed(2)}×</span></label>
-                <input type="range" min={0.45} max={2.4} step={0.05} value={selectedSticker.scale}
-                  onChange={(e) => updateSticker(selectedSticker.instanceId, { scale: +e.target.value })}
-                  className="w-full accent-[#c2437f]" />
-                <label className="mt-1 flex justify-between text-sm font-bold">tilt <span>{selectedSticker.rotation}°</span></label>
-                <input type="range" min={-90} max={90} step={1} value={selectedSticker.rotation}
-                  onChange={(e) => updateSticker(selectedSticker.instanceId, { rotation: +e.target.value })}
-                  className="w-full accent-[#c2437f]" />
-                <p className="mt-1 text-xs opacity-60">or drag it, and scroll on it to resize</p>
-              </div>
-            )}
-
-            <button onClick={doExport} disabled={exporting}
-              className="ink ink-shadow mt-5 bg-ink px-7 py-2.5 font-hand text-3xl font-bold text-white transition hover:-rotate-1 disabled:opacity-50">
-              {exporting ? 'making your png…' : 'download this frame ♡'}
-            </button>
-            <p className="mt-1.5 text-xs opacity-60">photos + filter + stickers + words, at 3× size</p>
-
-            <button onClick={() => setView('album')}
-              className="ink-sm mt-4 bg-white px-4 py-1.5 font-bold transition hover:-rotate-1">
-              your photo shelf ♡ ({albumPhotos.length})
-            </button>
           </div>
         </div>
+
+        {selectedSticker && (
+          <div data-sticker-controls="true" className="ink ink-shadow-soft mt-4 w-full max-w-[340px] bg-white/85 p-4">
+            <p className="flex items-center justify-between font-hand text-2xl font-bold">
+              {stickerById(selectedSticker.stickerId).label} sticker
+              <button onClick={() => peelSticker(selectedSticker.instanceId)}
+                className="ink-sm bg-[#ffd9d9] px-2.5 py-1 font-doodle text-xs font-bold">peel off ×</button>
+            </p>
+            <label className="mt-2 flex justify-between text-sm font-bold">size <span>{selectedSticker.scale.toFixed(2)}×</span></label>
+            <input type="range" min={0.45} max={2.4} step={0.05} value={selectedSticker.scale}
+              onChange={(e) => updateSticker(selectedSticker.instanceId, { scale: +e.target.value })}
+              className="w-full accent-[#c2437f]" />
+            <label className="mt-1 flex justify-between text-sm font-bold">tilt <span>{selectedSticker.rotation}°</span></label>
+            <input type="range" min={-90} max={90} step={1} value={selectedSticker.rotation}
+              onChange={(e) => updateSticker(selectedSticker.instanceId, { rotation: +e.target.value })}
+              className="w-full accent-[#c2437f]" />
+            <p className="mt-1 text-xs opacity-60">or drag it, and scroll on it to resize</p>
+          </div>
+        )}
+
+        <button onClick={doExport} disabled={exporting}
+          className="ink ink-shadow mt-5 bg-ink px-7 py-2.5 font-hand text-3xl font-bold text-white transition hover:-rotate-1 disabled:opacity-50">
+          {exporting ? 'making your png…' : 'download this frame ♡'}
+        </button>
+        <p className="mt-1.5 text-xs opacity-60">photos + filter + stickers + words, at 3× size</p>
+
+        <button onClick={() => setView('album')}
+          className="ink-sm mt-4 bg-white px-4 py-1.5 font-bold transition hover:-rotate-1">
+          your photo shelf ♡ ({albumPhotos.length})
+        </button>
 
         <button onClick={onExit}
           className="ink-sm mt-6 bg-white px-5 py-2 font-bold transition hover:rotate-1">
