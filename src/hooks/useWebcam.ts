@@ -37,3 +37,18 @@ export function useWebcam() {
 
   return { videoRef, status, error, start, stop }
 }
+
+/** Grab one mirrored frame from the live video as a data URL (4:3, like the preview). */
+export function captureFrame(video: HTMLVideoElement): string | null {
+  const vw = video.videoWidth, vh = video.videoHeight
+  if (!vw || !vh) return null
+  const target = 4 / 3
+  let sw = vw, sh = vw / target
+  if (sh > vh) { sh = vh; sw = vh * target }
+  const c = document.createElement('canvas')
+  c.width = 960; c.height = 720
+  const ctx = c.getContext('2d')!
+  ctx.translate(c.width, 0); ctx.scale(-1, 1) // mirror, same as preview
+  ctx.drawImage(video, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, c.width, c.height)
+  return c.toDataURL('image/jpeg', 0.92)
+}

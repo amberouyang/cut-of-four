@@ -1,11 +1,26 @@
 import { useEffect, useState } from 'react'
-import { useWebcam } from '../hooks/useWebcam'
+import { captureFrame, useWebcam } from '../hooks/useWebcam'
 import { FILTERS } from '../data/filters'
 import { Bow, HeartDoodle } from './doodles'
 
 export default function InsideBooth({ onExit }: { onExit: () => void }) {
   const cam = useWebcam()
   const [filter, setFilter] = useState(FILTERS[0])
+  const [countdown, setCountdown] = useState<number | null>(null)
+  const [flash, setFlash] = useState(false)
+  const [photo, setPhoto] = useState<string | null>(null)
+
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+  async function takePhoto() {
+    if (cam.status !== 'on' || countdown !== null || !cam.videoRef.current) return
+    for (const n of [3, 2, 1]) { setCountdown(n); await sleep(880) }
+    setCountdown(null)
+    const shot = captureFrame(cam.videoRef.current)
+    if (shot) {
+      setPhoto(shot)
+      setFlash(true); window.setTimeout(() => setFlash(false), 480)
+    }
+  }
 
   // start the camera as soon as you step inside; stop it when you leave (hook cleanup)
   useEffect(() => { cam.start() }, [cam.start])
@@ -41,8 +56,33 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               ● live — mirrored
             </span>
           )}
+          {countdown !== null && (
+            <div className="absolute inset-0 flex items-center justify-center bg-ink/20">
+              <span key={countdown} className="animate-countpop font-hand text-[110px] font-bold leading-none text-white drop-shadow-[0_4px_0_rgba(194,67,127,.7)]">
+                {countdown}
+              </span>
+            </div>
+          )}
+          {flash && <div className="animate-flash pointer-events-none absolute inset-0 bg-white" />}
         </div>
       </div>
+
+      {/* shutter */}
+      <button onClick={takePhoto} disabled={cam.status !== 'on' || countdown !== null}
+        className="ink ink-shadow mt-5 bg-pink-mid px-8 py-2.5 font-hand text-3xl font-bold transition hover:-rotate-1 disabled:opacity-40">
+        {countdown !== null ? 'get ready…' : 'take a photo!'}
+      </button>
+
+      {/* last shot preview */}
+      {photo && (
+        <div className="ink ink-shadow-soft mt-5 w-full max-w-[300px] bg-white p-2.5 text-center">
+          <img src={photo} alt="Your shot" className="ink-sm w-full" style={{ filter: filter.css }} />
+          <p className="mt-1.5 flex items-center justify-center gap-2 text-sm font-bold">
+            your shot ♡
+            <button onClick={() => setPhoto(null)} className="ink-sm bg-blush px-2.5 py-0.5 text-xs">retake</button>
+          </p>
+        </div>
+      )}
 
       {/* filter chips */}
       <div className="mt-4 flex max-w-[560px] flex-wrap justify-center gap-2">

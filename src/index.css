@@ -40,5 +40,14 @@ a, button, [role="button"], input, select, textarea, label, summary {
   border: 2px solid var(--color-ink);
   border-radius: 125px 12px 115px 12px / 12px 115px 12px 125px;
 }
+@keyframes countpop {
+  0% { transform: scale(1.6) rotate(-4deg); opacity: 0; }
+  35% { transform: scale(1) rotate(2deg); opacity: 1; }
+  100% { transform: scale(.92); opacity: .9; }
+}
+@keyframes flashanim { 0% { opacity: 1; } 100% { opacity: 0; } }
+.animate-countpop { animation: countpop .85s ease-out both; }
+.animate-flash { animation: flashanim .45s ease-out both; }
+
 .ink-shadow { box-shadow: 3px 4px 0 rgba(35, 35, 35, .9); }
 .ink-shadow-soft { box-shadow: 2px 3px 0 rgba(35, 35, 35, .18); }
