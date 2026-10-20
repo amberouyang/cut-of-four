@@ -3,6 +3,10 @@ import { captureFrame, useWebcam } from '../hooks/useWebcam'
 import { FILTERS } from '../data/filters'
 import { FRAMES, type FrameId } from '../data/frames'
 import FramePreview, { DEFAULT_TEXTS, type FrameTexts } from './FramePreview'
+import StickerDrawer, { StickerVisual } from './StickerDrawer'
+import type { StickerInstance } from '../data/stickers'
+
+let stickerUid = 0
 import { Bow, HeartDoodle } from './doodles'
 
 export default function InsideBooth({ onExit }: { onExit: () => void }) {
@@ -18,6 +22,20 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     strip: [null, null, null, null], 'student-id': [null], music: [null], instagram: [null],
   })
   const [texts, setTexts] = useState<FrameTexts>(DEFAULT_TEXTS)
+  const [allStickers, setAllStickers] = useState<Record<FrameId, StickerInstance[]>>({
+    strip: [], 'student-id': [], music: [], instagram: [],
+  })
+  const stickers = allStickers[frame]
+  const addSticker = (stickerId: string) => {
+    const inst: StickerInstance = {
+      instanceId: `st-${++stickerUid}`, stickerId,
+      x: 25 + Math.random() * 45, y: 25 + Math.random() * 40,
+      scale: 1, rotation: Math.round(Math.random() * 20 - 10),
+    }
+    setAllStickers((prev) => ({ ...prev, [frame]: [...prev[frame], inst] }))
+  }
+  const peelSticker = (instanceId: string) =>
+    setAllStickers((prev) => ({ ...prev, [frame]: prev[frame].filter((s) => s.instanceId !== instanceId) }))
   const photos = allPhotos[frame]
   const photoCount = FRAMES.find((f) => f.id === frame)!.photoCount
   const filled = photos.filter(Boolean).length
@@ -136,7 +154,20 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             ))}
           </div>
           <div className="mt-4 flex w-full justify-center">
-            <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts} />
+            <div className="relative">
+              <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts} />
+              {stickers.map((s) => (
+                <button key={s.instanceId} onClick={() => peelSticker(s.instanceId)} title="tap to peel off"
+                  className="absolute z-20 -translate-x-1/2 -translate-y-1/2 transition hover:scale-110"
+                  style={{ left: `${s.x}%`, top: `${s.y}%`, transform: `translate(-50%,-50%) rotate(${s.rotation}deg) scale(${s.scale})` }}>
+                  <StickerVisual stickerId={s.stickerId} size={44} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <StickerDrawer onPick={addSticker} />
           </div>
 
           {/* text editor for the chosen frame */}
