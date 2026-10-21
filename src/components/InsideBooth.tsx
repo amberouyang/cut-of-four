@@ -10,6 +10,7 @@ import { exportNodePng } from '../utils/exportPng'
 import PhotoAlbum from './PhotoAlbum'
 import Scrapbook from './Scrapbook'
 import type { PlacedPhoto } from './DraggablePhoto'
+import type { PlacedDecor } from './DraggableDecor'
 import { loadAlbum, removeFromAlbum, saveToAlbum, type AlbumPhoto } from '../utils/album'
 
 let stickerUid = 0
@@ -39,6 +40,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
   const [albumPhotos, setAlbumPhotos] = useState<AlbumPhoto[]>([])
   // scrapbook pages live here so peeking at the shelf doesn't empty the book
   const [bookPlaced, setBookPlaced] = useState<Record<number, PlacedPhoto[]>>({})
+  const [bookDecor, setBookDecor] = useState<Record<number, PlacedDecor[]>>({})
   useEffect(() => { loadAlbum().then(setAlbumPhotos).catch(() => {}) }, [])
   const deleteAlbumPhoto = (id: number) => {
     removeFromAlbum(id).catch(() => {})
@@ -175,6 +177,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     return (
       <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
         <Scrapbook photos={albumPhotos} placed={bookPlaced} onPlacedChange={setBookPlaced}
+          decor={bookDecor} onDecorChange={setBookDecor}
           onBack={() => setView('album')} />
       </div>
     )
