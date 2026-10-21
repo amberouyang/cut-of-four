@@ -2,10 +2,10 @@
 @import "tailwindcss";
 
 /* pink pixel cursor everywhere — cut from the moodboard screenshots, outline intact */
-html, body, * { cursor: url('/cursor.png') 3 1, auto !important; }
+html, body, * { cursor: url('./assets/cursor.png') 3 1, auto !important; }
 /* pixel hand on anything clickable */
 a, button, [role="button"], input, select, textarea, label, summary {
-  cursor: url('/cursor-pointer.png') 16 1, pointer !important;
+  cursor: url('./assets/cursor-pointer.png') 16 1, pointer !important;
 }
 
 @theme {
