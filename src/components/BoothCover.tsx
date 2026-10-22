@@ -53,7 +53,7 @@ export default function BoothCover({ opening, onEnter, featured = [] }: {
           })}
         </g>
       ))}
-      <text x="150" y="356" style={txt(19)}>{featured.length > 0 ? 'your strips ♡' : 'featured strips'}</text>
+      <text x="150" y="356" style={txt(19)}>featured strips</text>
       <path d="M238 344c14-2 22-10 24-22" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" />
       <path d="M256 326l7-6-1 9" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" />
 
