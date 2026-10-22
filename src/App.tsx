@@ -8,11 +8,13 @@ type Stage = 'cover' | 'opening' | 'inside'
 
 export default function App() {
   const [stage, setStage] = useState<Stage>('cover')
-  // your newest shelf photos star in the cover's featured strips window
+  // photos you star on the shelf appear in the cover's featured strips window
   const [featured, setFeatured] = useState<string[]>([])
   useEffect(() => {
     if (stage === 'cover') {
-      loadAlbum().then((photos) => setFeatured(photos.map((p) => p.dataUrl))).catch(() => {})
+      loadAlbum()
+        .then((photos) => setFeatured(photos.filter((p) => p.featured).map((p) => p.dataUrl)))
+        .catch(() => {})
     }
   }, [stage])
 

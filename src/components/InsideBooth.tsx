@@ -11,7 +11,7 @@ import PhotoAlbum from './PhotoAlbum'
 import Scrapbook from './Scrapbook'
 import type { PlacedPhoto } from './DraggablePhoto'
 import type { PlacedDecor } from './DraggableDecor'
-import { loadAlbum, removeFromAlbum, saveToAlbum, type AlbumPhoto } from '../utils/album'
+import { loadAlbum, removeFromAlbum, saveToAlbum, setPhotoFeatured, type AlbumPhoto } from '../utils/album'
 
 let stickerUid = 0
 import { Bow, HeartDoodle } from './doodles'
@@ -45,6 +45,11 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
   const deleteAlbumPhoto = (id: number) => {
     removeFromAlbum(id).catch(() => {})
     setAlbumPhotos((prev) => prev.filter((p) => p.id !== id))
+  }
+  const toggleFeatured = (photo: AlbumPhoto) => {
+    const next = !photo.featured
+    setPhotoFeatured(photo.id, next).catch(() => {})
+    setAlbumPhotos((prev) => prev.map((p) => (p.id === photo.id ? { ...p, featured: next } : p)))
   }
   const stickers = allStickers[frame]
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null)
@@ -168,7 +173,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     return (
       <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
         <PhotoAlbum photos={albumPhotos} onBack={() => setView('shoot')} onDelete={deleteAlbumPhoto}
-          onOpenBook={() => setView('book')} />
+          onOpenBook={() => setView('book')} onToggleFeatured={toggleFeatured} />
       </div>
     )
   }

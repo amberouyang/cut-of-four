@@ -12,11 +12,12 @@ function downloadPhoto(photo: AlbumPhoto) {
  * The photo shelf — every photo taken in the booth, all in one place.
  * Step 1 of the scrapbook: collect first, decorate into book pages later.
  */
-export default function PhotoAlbum({ photos, onBack, onDelete, onOpenBook }: {
+export default function PhotoAlbum({ photos, onBack, onDelete, onOpenBook, onToggleFeatured }: {
   photos: AlbumPhoto[]
   onBack: () => void
   onDelete: (id: number) => void
   onOpenBook: () => void
+  onToggleFeatured: (photo: AlbumPhoto) => void
 }) {
   return (
     <div className="flex w-full flex-col items-center">
@@ -27,6 +28,7 @@ export default function PhotoAlbum({ photos, onBack, onDelete, onOpenBook }: {
       </div>
       <p className="mt-1 max-w-md text-center text-sm opacity-60">
         every photo you take lands here, saved in your browser on this device only ♡
+        <br />tap ☆ on a photo to show it in the cover's featured strips
       </p>
       <button onClick={onOpenBook}
         className="ink-sm mt-4 bg-pink-mid px-5 py-2 font-bold transition hover:-rotate-1">
@@ -54,7 +56,12 @@ export default function PhotoAlbum({ photos, onBack, onDelete, onOpenBook }: {
                 {' · '}
                 {new Date(photo.createdAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}
               </figcaption>
-              <div className="mt-1.5 flex justify-center gap-2">
+              <div className="mt-1.5 flex flex-wrap justify-center gap-2">
+                <button onClick={() => onToggleFeatured(photo)}
+                  title={photo.featured ? 'Showing in the cover featured strips — tap to take it off' : 'Show this photo in the cover featured strips'}
+                  className={`ink-sm px-3 py-1 text-xs font-bold transition hover:-rotate-1 ${photo.featured ? 'bg-pink-mid' : 'bg-white'}`}>
+                  {photo.featured ? '★ featured' : '☆ feature'}
+                </button>
                 <button onClick={() => downloadPhoto(photo)}
                   className="ink-sm bg-blush px-3 py-1 text-xs font-bold transition hover:-rotate-1">
                   save ↓

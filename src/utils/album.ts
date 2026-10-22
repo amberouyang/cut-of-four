@@ -3,7 +3,7 @@
  * Saved in IndexedDB, so photos live in this browser on this device only —
  * nothing is uploaded anywhere, and they survive closing the tab.
  */
-export type AlbumPhoto = { id: number; dataUrl: string; createdAt: number }
+export type AlbumPhoto = { id: number; dataUrl: string; createdAt: number; featured?: boolean }
 
 const DB_NAME = 'cut-of-four'
 const STORE = 'album-photos'
@@ -46,4 +46,20 @@ export async function saveToAlbum(dataUrl: string): Promise<AlbumPhoto> {
 
 export async function removeFromAlbum(id: number): Promise<void> {
   await run('readwrite', (s) => s.delete(id))
+}
+
+/** Star or unstar a photo for the cover's featured strips window. */
+export async function setPhotoFeatured(id: number, featured: boolean): Promise<void> {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite')
+    const store = tx.objectStore(STORE)
+    const getReq = store.get(id)
+    getReq.onsuccess = () => {
+      const rec = getReq.result as AlbumPhoto | undefined
+      if (rec) store.put({ ...rec, featured })
+    }
+    tx.oncomplete = () => resolve()
+    tx.onerror = () => reject(tx.error)
+  })
 }
