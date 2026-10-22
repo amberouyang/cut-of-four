@@ -419,7 +419,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
 
         {/* ── right: live frame preview ── */}
         <div className="flex flex-col items-center">
-          <p className="font-hand text-3xl font-bold">your frame so far ♡</p>
+          <p className="font-hand text-3xl font-bold">your frame</p>
           <div className="relative mt-3">
             <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts}
               selectedSlot={selectedSlot}
