@@ -9,6 +9,10 @@ A cute photobooth that lives in your browser.
 
 Take webcam photos, pick a pretty frame, add words and stickers, then save the final picture.
 
+No downloads, just a click.
+
+**[Try it live](https://amberouyang.github.io/cut-of-four/)**  
+
 <p align="center">
   <img src="assets/landing-page.png" width="620" alt="The Cut of Four photobooth entrance" />
 </p>
@@ -21,6 +25,7 @@ Take webcam photos, pick a pretty frame, add words and stickers, then save the f
 4. Click **take a photo!** and pose
 5. Add words and stickers
 6. Click **download this frame ♡** to save it
+7. Open **your photo shelf** to see every photo you took, and stick your favorites into **your scrapbook**
 
 ## Fun things to try
 
@@ -43,12 +48,18 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:5173
+Then open http://localhost:5173/cut-of-four/
 
 Build it:
 
 ```bash
 npm run build
+```
+
+Send an update to the live site:
+
+```bash
+npm run deploy
 ```
 
 ### Built with
@@ -73,4 +84,4 @@ npm run build
 
 • `src/utils` has the PNG download helper
 
-• `public` has the pink pixel cursors
+• `src/assets` has the pink pixel cursors
