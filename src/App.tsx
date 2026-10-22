@@ -1,12 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import BoothCover from './components/BoothCover'
 import InsideBooth from './components/InsideBooth'
 import { Bow, Sparkle } from './components/doodles'
+import { loadAlbum } from './utils/album'
 
 type Stage = 'cover' | 'opening' | 'inside'
 
 export default function App() {
   const [stage, setStage] = useState<Stage>('cover')
+  // your newest shelf photos star in the cover's featured strips window
+  const [featured, setFeatured] = useState<string[]>([])
+  useEffect(() => {
+    if (stage === 'cover') {
+      loadAlbum().then((photos) => setFeatured(photos.map((p) => p.dataUrl))).catch(() => {})
+    }
+  }, [stage])
 
   const enter = () => {
     if (stage !== 'cover') return
@@ -23,7 +31,7 @@ export default function App() {
         <h1 className="font-hand text-5xl font-bold">cut of four</h1>
         <Sparkle size={28} className="rotate-12" />
       </div>
-      <BoothCover opening={stage === 'opening'} onEnter={enter} />
+      <BoothCover opening={stage === 'opening'} onEnter={enter} featured={featured} />
       <p className="-mt-1 -rotate-2 font-hand text-2xl font-bold leading-none text-pink-deep">
         by Amber
       </p>

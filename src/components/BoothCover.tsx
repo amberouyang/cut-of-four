@@ -8,7 +8,12 @@ const txt = (size: number, weight = 700) => ({
   fontFamily: "'Gaegu', cursive", fontSize: size, fontWeight: weight, fill: INK,
 } as const)
 
-export default function BoothCover({ opening, onEnter }: { opening: boolean; onEnter: () => void }) {
+export default function BoothCover({ opening, onEnter, featured = [] }: {
+  opening: boolean
+  onEnter: () => void
+  /** the visitor's own newest photos, shown in the featured strips window */
+  featured?: string[]
+}) {
   return (
     <svg viewBox="0 0 640 570" className="w-full max-w-[560px]" role="img" aria-label="Hand-drawn photobooth">
       {/* sign */}
@@ -27,13 +32,28 @@ export default function BoothCover({ opening, onEnter }: { opening: boolean; onE
       {[0, 1, 2, 3].map((i) => (
         <g key={i} transform={`translate(${116 + i * 48}, 188)`}>
           <rect width="38" height="126" fill="#fff" stroke={INK} strokeWidth="1.8" />
-          {[0, 1, 2, 3].map((j) => (
-            <rect key={j} x="5" y={6 + j * 30} width="28" height="24"
-              fill={['#f9a8c9', '#d9d9d9', '#232323', '#ffd6e7'][(i + j) % 4]} opacity={j === 2 ? 0.75 : 0.85} />
-          ))}
+          {[0, 1, 2, 3].map((j) => {
+            const photo = featured[i * 4 + j]
+            const y = 6 + j * 30
+            if (!photo) {
+              return (
+                <rect key={j} x="5" y={y} width="28" height="24"
+                  fill={['#f9a8c9', '#d9d9d9', '#232323', '#ffd6e7'][(i + j) % 4]} opacity={j === 2 ? 0.75 : 0.85} />
+              )
+            }
+            const clipId = `featured-${i}-${j}`
+            return (
+              <g key={j}>
+                <clipPath id={clipId}><rect x="5" y={y} width="28" height="24" /></clipPath>
+                <image href={photo} x="5" y={y} width="28" height="24"
+                  preserveAspectRatio="xMidYMid slice" clipPath={`url(#${clipId})`} />
+                <rect x="5" y={y} width="28" height="24" fill="none" stroke={INK} strokeWidth="0.8" opacity="0.3" />
+              </g>
+            )
+          })}
         </g>
       ))}
-      <text x="150" y="356" style={txt(19)}>featured strips</text>
+      <text x="150" y="356" style={txt(19)}>{featured.length > 0 ? 'your strips ♡' : 'featured strips'}</text>
       <path d="M238 344c14-2 22-10 24-22" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" />
       <path d="M256 326l7-6-1 9" fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" />
 
