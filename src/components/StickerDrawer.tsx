@@ -36,7 +36,7 @@ export default function StickerDrawer({ onPick }: { onPick: (stickerId: string) 
           </button>
         ))}
       </div>
-      <p className="mt-2 text-xs opacity-60">tap one to stick it on your frame — then drag it around, scroll on it to resize</p>
+      <p className="mt-2 text-xs opacity-60">tap one to stick it on your frame, then drag it around and scroll on it to resize</p>
     </div>
   )
 }

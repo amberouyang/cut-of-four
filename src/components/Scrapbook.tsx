@@ -215,7 +215,7 @@ export default function Scrapbook({ photos, placed, onPlacedChange, decor, onDec
           add a photo to page {activePage} <span className="font-doodle text-sm font-bold text-ink/50">(the page with the pink outline)</span>
         </p>
         {photos.length === 0 ? (
-          <p className="mt-2 text-sm opacity-60">no photos on your shelf yet — take some in the booth first ♡</p>
+          <p className="mt-2 text-sm opacity-60">no photos on your shelf yet. take some in the booth first ♡</p>
         ) : (
           <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
             {photos.map((photo) => (

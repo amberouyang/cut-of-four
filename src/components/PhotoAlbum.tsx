@@ -58,7 +58,7 @@ export default function PhotoAlbum({ photos, onBack, onDelete, onOpenBook, onTog
               </figcaption>
               <div className="mt-1.5 flex flex-wrap justify-center gap-2">
                 <button onClick={() => onToggleFeatured(photo)}
-                  title={photo.featured ? 'Showing in the cover featured strips — tap to take it off' : 'Show this photo in the cover featured strips'}
+                  title={photo.featured ? 'Showing in the cover featured strips. tap to take it off' : 'Show this photo in the cover featured strips'}
                   className={`ink-sm px-3 py-1 text-xs font-bold transition hover:-rotate-1 ${photo.featured ? 'bg-pink-mid' : 'bg-white'}`}>
                   {photo.featured ? '★ featured' : '☆ feature'}
                 </button>

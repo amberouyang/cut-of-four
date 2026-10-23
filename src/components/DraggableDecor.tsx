@@ -24,7 +24,7 @@ export default function DraggableDecor({ item, selected, onSelect, onUpdate, onR
 
   return (
     <div
-      role="button" aria-label="Decoration on page — drag to move"
+      role="button" aria-label="Decoration on page, drag to move"
       className={`group absolute z-30 touch-none select-none ${selected ? 'outline-2 outline-dashed outline-pink-deep' : ''}`}
       style={{
         left: `${item.x}%`, top: `${item.y}%`,

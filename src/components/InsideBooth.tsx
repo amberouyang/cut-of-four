@@ -196,7 +196,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           <h2 className="font-hand text-4xl font-bold">decorate it!</h2>
           <HeartDoodle size={24} />
         </div>
-        <p className="mt-1 text-sm opacity-60">your finished frame — make it yours ♡</p>
+        <p className="mt-1 text-sm opacity-60">your finished frame. make it yours ♡</p>
         <button onClick={() => setView('shoot')}
           className="ink-sm mt-3 bg-pink-mid px-4 py-1.5 font-bold transition hover:-rotate-1">
           ← take more photos
@@ -229,7 +229,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             {undoStack.length > 0 && (
               <button onClick={undoLastPhoto}
                 className="ink-sm mt-3 bg-white px-4 py-1.5 text-sm font-bold transition hover:-rotate-1">
-                ↩ undo — bring that photo back ({undoStack.length})
+                ↩ undo, bring that photo back ({undoStack.length})
               </button>
             )}
 
@@ -362,7 +362,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               <p className="max-w-xs text-lg leading-snug">
                 {cam.status === 'error'
                   ? `camera didn't start: ${cam.error}`
-                  : 'your camera is off — allow access to see yourself ♡'}
+                  : 'your camera is off. allow access to see yourself ♡'}
               </p>
               <button onClick={cam.start}
                 className="ink-sm bg-pink-mid px-5 py-2 font-bold transition hover:-rotate-1">
@@ -372,7 +372,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           )}
           {cam.status === 'on' && (
             <span className="absolute left-3 top-3 rounded-full bg-white/85 px-3 py-0.5 text-sm font-bold">
-              ● live — mirrored
+              ● live, mirrored
             </span>
           )}
           {countdown !== null && (
@@ -390,19 +390,19 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         className="ink ink-shadow mt-5 bg-pink-mid px-8 py-2.5 font-hand text-3xl font-bold transition hover:-rotate-1 disabled:opacity-40">
         {shooting ? (shotLabel || 'get ready…')
           : selectedSlot !== null ? `retake photo ${selectedSlot + 1}!`
-          : photoCount === 4 ? 'start 4-shot burst!' : 'take a photo!'}
+          : photoCount === 4 ? 'start a 4 shot burst!' : 'take a photo!'}
       </button>
       <p className="mt-2 max-w-[480px] text-center text-sm opacity-60">
         {selectedSlot !== null
-          ? <>photo {selectedSlot + 1} is picked — the shutter replaces <b>only that one</b> (old one goes to undo). <button className="underline" onClick={() => setSelectedSlot(null)}>cancel</button></>
+          ? <>photo {selectedSlot + 1} is picked. the shutter replaces <b>only that one</b> (old one goes to undo). <button className="underline" onClick={() => setSelectedSlot(null)}>cancel</button></>
           : photoCount === 4
-            ? '4 shots in a row, countdown before each — then off to decorating!'
-            : 'one shot into this frame — then off to decorating!'} · {filled}/{photoCount} filled
+            ? '4 shots in a row, countdown before each, then off to decorating!'
+            : 'one shot into this frame, then off to decorating!'} · {filled}/{photoCount} filled
       </p>
       {undoStack.length > 0 && (
         <button onClick={undoLastPhoto}
           className="ink-sm mt-2 bg-white px-4 py-1.5 text-sm font-bold transition hover:-rotate-1">
-          ↩ undo — bring that photo back ({undoStack.length})
+          ↩ undo, bring that photo back ({undoStack.length})
         </button>
       )}
 
@@ -426,7 +426,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               onSelectSlot={(i) => setSelectedSlot((cur) => (cur === i ? null : i))} />
           </div>
           <p className="mt-3 max-w-[300px] text-center text-sm opacity-60">
-            {filled}/{photoCount} filled — tap a photo in the frame to retake just that one
+            {filled}/{photoCount} filled. tap a photo in the frame to retake just that one
           </p>
           {filled > 0 && (
             <button onClick={() => setView('decorate')}
