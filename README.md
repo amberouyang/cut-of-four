@@ -1,87 +1,71 @@
 # Cut of Four <img src="assets/pixel-camera.png" height="34" alt="Pink pixel camera" />
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 
-A cute photobooth that lives in your browser.
+A cute photobooth that lives in your browser. Take webcam photos, pick a pretty frame, add words and stickers, then save the final picture.
 
-Take webcam photos, pick a pretty frame, add words and stickers, then save the final picture.
+![Cut of Four photobooth entrance](assets/landing-page.png)
 
-No downloads, just a click.
+## Try it
 
-**[Try it live](https://amberouyang.github.io/cut-of-four/)**  
+No download or setup needed.
 
-<p align="center">
-  <img src="assets/landing-page.png" width="620" alt="The Cut of Four photobooth entrance" />
-</p>
+1. Open **[amberouyang.github.io/cut-of-four](https://amberouyang.github.io/cut-of-four/)** in Chrome or Edge on a computer.
+2. Click the curtain that says **enter →**.
+3. When your browser asks, click **Allow** for the camera.
 
 ## How to use it
 
-1. Click the curtain that says **enter →**
-2. Allow camera access when your browser asks
-3. Pick a filter and a frame
-4. Click **take a photo!** and pose
-5. Add words and stickers
-6. Click **download this frame ♡** to save it
-7. Open **your photo shelf** to see every photo you took, and stick your favorites into **your scrapbook**
+1. Pick a filter and a frame.
+2. Click **take a photo** and pose.
+3. Add words and stickers on the decorate screen.
+4. Click **download this frame** to save it.
+5. Open **your photo shelf** to see every photo you took, and stick your favorites into **your scrapbook**.
 
-## Fun things to try
+| Do this | To do this |
+| --- | --- |
+| Tap a photo in the strip | Retake just that one |
+| Drag a sticker | Move it on the frame |
+| Scroll on a sticker | Make it bigger or smaller |
+| Press undo | Bring back a photo you cleared |
+| Tap **☆ feature** on the shelf | Show it in the cover featured strips |
 
-• Retake just one photo in the strip if you blinked
+**Tips:** Use a bright room so your photos look clear. Your photos stay on this device in your browser until you download or delete them.
 
-• Drag stickers around and make them bigger or smaller
+## Troubleshooting
 
-• Deleted a photo by accident? Press the undo button
+• **The camera doesn't turn on:** click the camera icon in your browser's address bar, choose **Allow**, and reload the page.
 
-• Your photos never leave your browser unless you download and share them
+• **The page looks blank after opening the link:** wait a minute and refresh, or try Chrome or Edge on a computer.
 
-***
+• **Your photos disappeared:** clearing browser data removes the photo shelf. Downloads you already saved to your computer are still yours.
+
+## Privacy
+
+Everything runs in your browser. Your camera and photos are never recorded or uploaded unless you download and share them yourself.
 
 ## For Developers
 
-Run it locally:
+To run Cut of Four on your own computer:
 
 ```bash
+git clone https://github.com/amberouyang/cut-of-four.git
+cd cut-of-four
 npm install
 npm run dev
 ```
 
-Then open http://localhost:5173/cut-of-four/
+Then open [http://localhost:5173/cut-of-four/](http://localhost:5173/cut-of-four/). Browsers only allow camera access on `localhost` or over HTTPS.
 
-Build it:
+Build it with `npm run build`. Send an update to the live site with `npm run deploy`.
 
-```bash
-npm run build
-```
+**Built with:** React, TypeScript, Vite, Tailwind CSS, and Google Fonts (Caveat, Gaegu, Cormorant Garamond).
 
-Send an update to the live site:
+**How it works:** The booth captures mirrored webcam frames in the browser, applies CSS filter presets, and places them into frame templates. Stickers and scrapbook pages are edited on the page, PNG export uses `html-to-image`, and the photo shelf is stored in IndexedDB on the visitor's device.
 
-```bash
-npm run deploy
-```
+## Author
 
-### Built with
-
-• React and TypeScript
-
-• Vite
-
-• Tailwind CSS
-
-• Google Fonts: Caveat, Gaegu, and Cormorant Garamond
-
-### Where things live
-
-• `src/App.tsx` controls the cover page and the booth
-
-• `src/components` has the camera screen, the frames, and the stickers
-
-• `src/data` has the filters, frames, and sticker lists
-
-• `src/hooks` has the webcam logic
-
-• `src/utils` has the PNG download helper
-
-• `src/assets` has the pink pixel cursors
+Amber Ouyang ([@amberouyang](https://github.com/amberouyang))
