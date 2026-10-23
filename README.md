@@ -60,7 +60,7 @@ npm run dev
 
 Then open [http://localhost:5173/cut-of-four/](http://localhost:5173/cut-of-four/). Browsers only allow camera access on `localhost` or over HTTPS.
 
-Build it with `npm run build`. Send an update to the live site with `npm run deploy`.
+Build it with `npm run build`. Pushing to `main` automatically rebuilds and updates the live site with GitHub Actions.
 
 **Built with:** React, TypeScript, Vite, Tailwind CSS, and Google Fonts (Caveat, Gaegu, Cormorant Garamond).
 
