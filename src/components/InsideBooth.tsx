@@ -327,7 +327,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
 
   // ── shoot screen (compact on desktop so the whole booth fits without scrolling) ──
   return (
-    <div className="paper-bg flex min-h-screen flex-col items-center px-3 py-3 font-doodle text-ink lg:h-dvh lg:min-h-0 lg:overflow-hidden lg:py-2">
+    <div className="paper-bg flex min-h-screen flex-col items-center px-3 py-3 font-doodle text-ink lg:min-h-dvh lg:py-3">
       <div className="flex w-full max-w-[960px] flex-wrap items-center justify-center gap-x-3 gap-y-1">
         <div className="flex items-center gap-1.5">
           <Bow size={22} className="-rotate-12" />
@@ -344,7 +344,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         </button>
       </div>
 
-      <div className="mt-2 flex w-full max-w-[960px] flex-wrap items-center justify-center gap-2">
+      <div className="mt-5 flex w-full max-w-[960px] flex-wrap items-center justify-center gap-2 lg:mt-4">
         <span className="font-hand text-xl font-bold">pick a frame ♡</span>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
           {FRAMES.map((f) => (
@@ -361,7 +361,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         {/* ── left: camera ── */}
         <div className="flex flex-col items-center">
           <div className="ink ink-shadow w-full max-w-[480px] bg-white p-2">
-            <div className="ink-sm relative aspect-[4/3] max-h-[min(42vh,360px)] w-full overflow-hidden bg-blush lg:max-h-[min(48vh,380px)]">
+            <div className="ink-sm relative aspect-[4/3] max-h-[min(40vh,340px)] w-full overflow-hidden bg-blush lg:max-h-[min(42vh,360px)]">
               <video ref={cam.videoRef} autoPlay playsInline muted
                 className="-scale-x-100 h-full w-full object-cover transition-[filter] duration-300"
                 style={{ display: cam.status === 'on' ? 'block' : 'none', filter: filter.css }} />
@@ -425,18 +425,28 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           </div>
         </div>
 
-        {/* ── right: live frame preview (scaled down so the tall strip fits) ── */}
-        <div className="flex flex-col items-center justify-center">
+        {/* ── right: live frame preview (sized per frame so nothing gets clipped) ── */}
+        <div className="flex flex-col items-center justify-center self-start lg:self-center">
           <p className="font-hand text-xl font-bold">your frame</p>
-          {/* fixed box so CSS scale shrinks layout space too, not just the drawing */}
-          <div className={`relative mt-1 overflow-hidden ${frame === 'strip' ? 'h-[390px] w-[130px] lg:h-[370px]' : 'h-[300px] w-[280px]'}`}>
-            <div className={`absolute left-1/2 top-0 -translate-x-1/2 origin-top ${frame === 'strip' ? 'scale-[0.48]' : 'scale-[0.78]'}`}>
-              <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts}
-                selectedSlot={selectedSlot}
-                onSelectSlot={(i) => setSelectedSlot((cur) => (cur === i ? null : i))} />
-            </div>
-          </div>
-          <p className="mt-1 max-w-[240px] text-center text-xs opacity-60">
+          {(() => {
+            // box size matches the scaled frame so music / instagram aren't cut off at the bottom
+            const box = {
+              strip: { box: 'h-[420px] w-[145px]', scale: 'scale-[0.55]' },
+              'student-id': { box: 'h-[230px] w-[310px]', scale: 'scale-[0.9]' },
+              music: { box: 'h-[400px] w-[255px]', scale: 'scale-[0.9]' },
+              instagram: { box: 'h-[420px] w-[270px]', scale: 'scale-[0.88]' },
+            }[frame]
+            return (
+              <div className={`relative mt-1 ${box.box}`}>
+                <div className={`absolute left-1/2 top-0 origin-top -translate-x-1/2 ${box.scale}`}>
+                  <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts}
+                    selectedSlot={selectedSlot}
+                    onSelectSlot={(i) => setSelectedSlot((cur) => (cur === i ? null : i))} />
+                </div>
+              </div>
+            )
+          })()}
+          <p className="mt-2 max-w-[240px] text-center text-xs opacity-60">
             tap a photo to retake · {filled}/{photoCount}
           </p>
           {filled > 0 && (
