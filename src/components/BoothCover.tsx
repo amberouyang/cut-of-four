@@ -64,24 +64,29 @@ export default function BoothCover({ opening, onEnter, featured = [] }: {
       <rect x="124" y="428" width="28" height="9" fill={INK} />
       <rect x="131" y="444" width="14" height="16" fill="none" stroke={INK} strokeWidth="1.8" />
 
-      {/* curtain door — click to enter */}
+      {/* curtain door — click to enter. clipped so the curtain can't slide through the wall */}
+      <clipPath id="door-clip">
+        <rect x="348" y="176" width="140" height="350" />
+      </clipPath>
       <g onClick={onEnter} role="button" aria-label="Enter the photobooth">
         <rect x="348" y="176" width="140" height="350" fill="#2b2b30" stroke={INK} strokeWidth="2.5" />
         {/* stool (inside, revealed as the curtain opens) */}
-        <ellipse cx="418" cy="448" rx="34" ry="10" fill="#fff" stroke={INK} strokeWidth="2.4" />
-        <path d="M410 456h16l4 42h-24z" fill="#fff" stroke={INK} strokeWidth="2.2" />
-        <ellipse cx="418" cy="502" rx="26" ry="6" fill="none" stroke={INK} strokeWidth="2.2" />
-        {/* curtain — bunches to the right when opening */}
-        <g style={{
-          transform: opening ? 'translateX(104px) scaleX(0.26)' : 'none',
-          transformOrigin: '488px 350px',
-          transition: 'transform 900ms ease-in-out',
-        }}>
-          <rect x="348" y="176" width="140" height="350" fill="#ffeef5" />
-          {[366, 388, 410, 432, 454, 474].map((x, i) => (
-            <path key={x} d={`M${x} 178c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 120 0 174c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 118 0 172`}
-              fill="none" stroke="#f9a8c9" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
-          ))}
+        <g clipPath="url(#door-clip)">
+          <ellipse cx="418" cy="448" rx="34" ry="10" fill="#fff" stroke={INK} strokeWidth="2.4" />
+          <path d="M410 456h16l4 42h-24z" fill="#fff" stroke={INK} strokeWidth="2.2" />
+          <ellipse cx="418" cy="502" rx="26" ry="6" fill="none" stroke={INK} strokeWidth="2.2" />
+          {/* curtain — bunches to the right jamb, stays inside the doorway */}
+          <g style={{
+            transform: opening ? 'scaleX(0.22)' : 'none',
+            transformOrigin: '488px 350px',
+            transition: 'transform 900ms ease-in-out',
+          }}>
+            <rect x="348" y="176" width="140" height="350" fill="#ffeef5" />
+            {[366, 388, 410, 432, 454, 474].map((x, i) => (
+              <path key={x} d={`M${x} 178c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 120 0 174c${i % 2 ? 7 : -7} 60 ${i % 2 ? -7 : 7} 118 0 172`}
+                fill="none" stroke="#f9a8c9" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
+            ))}
+          </g>
         </g>
         <rect x="348" y="176" width="140" height="350" fill="none" stroke={INK} strokeWidth="2.5" />
         {/* enter sign */}
