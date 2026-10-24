@@ -327,26 +327,27 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
 
   // ── shoot screen (compact on desktop so the whole booth fits without scrolling) ──
   return (
-    <div className="paper-bg flex min-h-screen flex-col items-center px-3 py-3 font-doodle text-ink lg:min-h-dvh lg:py-3">
-      <div className="flex w-full max-w-[960px] flex-wrap items-center justify-center gap-x-3 gap-y-1">
-        <div className="flex items-center gap-1.5">
-          <Bow size={22} className="-rotate-12" />
-          <h2 className="font-hand text-3xl font-bold lg:text-[2rem]">you're inside!</h2>
-          <HeartDoodle size={18} />
+    <div className="paper-bg flex min-h-screen flex-col items-center justify-center px-3 py-6 font-doodle text-ink lg:min-h-dvh lg:py-5">
+      {/* title + frame picker sit together, just above the camera */}
+      <div className="flex w-full max-w-[960px] flex-col items-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+          <div className="flex items-center gap-1.5">
+            <Bow size={22} className="-rotate-12" />
+            <h2 className="font-hand text-3xl font-bold lg:text-[2rem]">you're inside!</h2>
+            <HeartDoodle size={18} />
+          </div>
+          <button onClick={() => setView('album')}
+            className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:-rotate-1">
+            your photo shelf ♡ ({albumPhotos.length})
+          </button>
+          <button onClick={onExit}
+            className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:rotate-1">
+            ← back outside
+          </button>
         </div>
-        <button onClick={() => setView('album')}
-          className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:-rotate-1">
-          your photo shelf ♡ ({albumPhotos.length})
-        </button>
-        <button onClick={onExit}
-          className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:rotate-1">
-          ← back outside
-        </button>
-      </div>
 
-      <div className="mt-5 flex w-full max-w-[960px] flex-wrap items-center justify-center gap-2 lg:mt-4">
-        <span className="font-hand text-xl font-bold">pick a frame ♡</span>
-        <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="font-hand text-xl font-bold">pick a frame ♡</span>
           {FRAMES.map((f) => (
             <button key={f.id} onClick={() => selectFrame(f.id)}
               className={`ink-sm px-2.5 py-1.5 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
@@ -357,7 +358,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         </div>
       </div>
 
-      <div className="mt-2 grid w-full max-w-[960px] flex-1 items-center justify-center gap-4 lg:grid-cols-[minmax(0,480px)_minmax(0,280px)] lg:gap-5">
+      <div className="mt-4 grid w-full max-w-[960px] items-start justify-center gap-4 lg:grid-cols-[minmax(0,480px)_minmax(0,280px)] lg:gap-5">
         {/* ── left: camera ── */}
         <div className="flex flex-col items-center">
           <div className="ink ink-shadow w-full max-w-[480px] bg-white p-2">
