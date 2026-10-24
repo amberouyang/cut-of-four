@@ -325,44 +325,44 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     )
   }
 
-  // ── shoot screen (compact on desktop so the whole booth fits without scrolling) ──
+  // ── shoot screen: fill the desktop window, stay just under one screen tall ──
   return (
-    <div className="paper-bg flex min-h-screen flex-col items-center justify-center px-3 py-6 font-doodle text-ink lg:min-h-dvh lg:py-5">
+    <div className="paper-bg flex min-h-screen flex-col items-center justify-center gap-3 px-4 py-4 font-doodle text-ink lg:min-h-dvh lg:py-3">
       {/* title + frame picker sit together, just above the camera */}
-      <div className="flex w-full max-w-[960px] flex-col items-center gap-3">
+      <div className="flex w-full max-w-[1100px] flex-col items-center gap-2.5">
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
           <div className="flex items-center gap-1.5">
-            <Bow size={22} className="-rotate-12" />
-            <h2 className="font-hand text-3xl font-bold lg:text-[2rem]">you're inside!</h2>
-            <HeartDoodle size={18} />
+            <Bow size={26} className="-rotate-12" />
+            <h2 className="font-hand text-4xl font-bold">you're inside!</h2>
+            <HeartDoodle size={22} />
           </div>
           <button onClick={() => setView('album')}
-            className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:-rotate-1">
+            className="ink-sm bg-white px-3.5 py-1.5 text-sm font-bold transition hover:-rotate-1">
             your photo shelf ♡ ({albumPhotos.length})
           </button>
           <button onClick={onExit}
-            className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:rotate-1">
+            className="ink-sm bg-white px-3.5 py-1.5 text-sm font-bold transition hover:rotate-1">
             ← back outside
           </button>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="font-hand text-xl font-bold">pick a frame ♡</span>
+          <span className="font-hand text-2xl font-bold">pick a frame ♡</span>
           {FRAMES.map((f) => (
             <button key={f.id} onClick={() => selectFrame(f.id)}
-              className={`ink-sm px-2.5 py-1.5 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
-              <span className="block text-[13px] font-bold leading-tight">{f.name}</span>
-              <span className="block text-[10px] opacity-60">{f.note}</span>
+              className={`ink-sm px-3 py-1.5 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+              <span className="block text-sm font-bold leading-tight">{f.name}</span>
+              <span className="block text-[11px] opacity-60">{f.note}</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="mt-4 grid w-full max-w-[960px] items-start justify-center gap-4 lg:grid-cols-[minmax(0,480px)_minmax(0,280px)] lg:gap-5">
+      <div className="grid w-full max-w-[1100px] items-start justify-center gap-5 lg:grid-cols-[minmax(0,560px)_minmax(0,320px)] lg:gap-6">
         {/* ── left: camera ── */}
         <div className="flex flex-col items-center">
-          <div className="ink ink-shadow w-full max-w-[480px] bg-white p-2">
-            <div className="ink-sm relative aspect-[4/3] max-h-[min(40vh,340px)] w-full overflow-hidden bg-blush lg:max-h-[min(42vh,360px)]">
+          <div className="ink ink-shadow w-full max-w-[560px] bg-white p-2.5">
+            <div className="ink-sm relative aspect-[4/3] max-h-[min(50vh,420px)] w-full overflow-hidden bg-blush lg:max-h-[min(52vh,440px)]">
               <video ref={cam.videoRef} autoPlay playsInline muted
                 className="-scale-x-100 h-full w-full object-cover transition-[filter] duration-300"
                 style={{ display: cam.status === 'on' ? 'block' : 'none', filter: filter.css }} />
@@ -396,12 +396,12 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           </div>
 
           <button onClick={takePhoto} disabled={cam.status !== 'on' || shooting}
-            className="ink ink-shadow mt-2.5 bg-pink-mid px-6 py-1.5 font-hand text-2xl font-bold transition hover:-rotate-1 disabled:opacity-40">
+            className="ink ink-shadow mt-3 bg-pink-mid px-7 py-2 font-hand text-3xl font-bold transition hover:-rotate-1 disabled:opacity-40">
             {shooting ? (shotLabel || 'get ready…')
               : selectedSlot !== null ? `retake photo ${selectedSlot + 1}!`
               : photoCount === 4 ? 'start a 4 shot burst!' : 'take a photo!'}
           </button>
-          <p className="mt-1 max-w-[440px] text-center text-xs opacity-60">
+          <p className="mt-1.5 max-w-[500px] text-center text-sm opacity-60">
             {selectedSlot !== null
               ? <>photo {selectedSlot + 1} is picked. the shutter replaces <b>only that one</b>. <button className="underline" onClick={() => setSelectedSlot(null)}>cancel</button></>
               : photoCount === 4
@@ -410,16 +410,16 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           </p>
           {undoStack.length > 0 && (
             <button onClick={undoLastPhoto}
-              className="ink-sm mt-1 bg-white px-3 py-1 text-xs font-bold transition hover:-rotate-1">
+              className="ink-sm mt-1.5 bg-white px-3 py-1 text-sm font-bold transition hover:-rotate-1">
               ↩ undo ({undoStack.length})
             </button>
           )}
 
-          <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+          <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
             {FILTERS.map((f) => (
               <button key={f.id} onClick={() => setFilter(f)}
-                className={`ink-sm flex items-center gap-1.5 px-2 py-1 text-xs font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
-                <span className="inline-block h-3 w-4 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
+                className={`ink-sm flex items-center gap-1.5 px-2.5 py-1 text-sm font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+                <span className="inline-block h-3.5 w-5 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
                 {f.name}
               </button>
             ))}
@@ -428,14 +428,14 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
 
         {/* ── right: live frame preview (sized per frame so nothing gets clipped) ── */}
         <div className="flex flex-col items-center justify-center self-start lg:self-center">
-          <p className="font-hand text-xl font-bold">your frame</p>
+          <p className="font-hand text-2xl font-bold">your frame</p>
           {(() => {
             // box size matches the scaled frame so music / instagram aren't cut off at the bottom
             const box = {
-              strip: { box: 'h-[420px] w-[145px]', scale: 'scale-[0.55]' },
-              'student-id': { box: 'h-[230px] w-[310px]', scale: 'scale-[0.9]' },
-              music: { box: 'h-[400px] w-[255px]', scale: 'scale-[0.9]' },
-              instagram: { box: 'h-[420px] w-[270px]', scale: 'scale-[0.88]' },
+              strip: { box: 'h-[470px] w-[160px]', scale: 'scale-[0.62]' },
+              'student-id': { box: 'h-[250px] w-[340px]', scale: 'scale-[0.98]' },
+              music: { box: 'h-[430px] w-[275px]', scale: 'scale-[0.96]' },
+              instagram: { box: 'h-[450px] w-[290px]', scale: 'scale-[0.94]' },
             }[frame]
             return (
               <div className={`relative mt-1 ${box.box}`}>
@@ -447,12 +447,12 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               </div>
             )
           })()}
-          <p className="mt-2 max-w-[240px] text-center text-xs opacity-60">
+          <p className="mt-2 max-w-[260px] text-center text-sm opacity-60">
             tap a photo to retake · {filled}/{photoCount}
           </p>
           {filled > 0 && (
             <button onClick={() => setView('decorate')}
-              className="ink ink-shadow mt-2 bg-ink px-5 py-1.5 font-hand text-2xl font-bold text-white transition hover:-rotate-1">
+              className="ink ink-shadow mt-2 bg-ink px-6 py-2 font-hand text-2xl font-bold text-white transition hover:-rotate-1">
               decorate your photo →
             </button>
           )}
