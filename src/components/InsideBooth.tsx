@@ -325,122 +325,128 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     )
   }
 
-  // ── shoot screen ──
+  // ── shoot screen (compact on desktop so the whole booth fits without scrolling) ──
   return (
-    <div className="paper-bg flex min-h-screen flex-col items-center px-4 py-8 font-doodle text-ink">
-      <div className="flex items-center gap-2">
-        <Bow size={30} className="-rotate-12" />
-        <h2 className="font-hand text-4xl font-bold">you're inside!</h2>
-        <HeartDoodle size={24} />
-      </div>
-      <button onClick={() => setView('album')}
-        className="ink-sm mt-3 bg-white px-4 py-1.5 font-bold transition hover:-rotate-1">
-        your photo shelf ♡ ({albumPhotos.length})
-      </button>
-
-      <p className="mt-6 font-hand text-3xl font-bold">pick a frame ♡</p>
-      <div className="mt-2 grid w-full max-w-[920px] grid-cols-2 gap-2 sm:grid-cols-4">
-        {FRAMES.map((f) => (
-          <button key={f.id} onClick={() => selectFrame(f.id)}
-            className={`ink-sm px-3 py-2 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
-            <span className="block text-[15px] font-bold leading-tight">{f.name}</span>
-            <span className="block text-xs opacity-60">{f.note}</span>
-          </button>
-        ))}
+    <div className="paper-bg flex min-h-screen flex-col items-center px-3 py-3 font-doodle text-ink lg:h-dvh lg:min-h-0 lg:overflow-hidden lg:py-2">
+      <div className="flex w-full max-w-[960px] flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        <div className="flex items-center gap-1.5">
+          <Bow size={22} className="-rotate-12" />
+          <h2 className="font-hand text-3xl font-bold lg:text-[2rem]">you're inside!</h2>
+          <HeartDoodle size={18} />
+        </div>
+        <button onClick={() => setView('album')}
+          className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:-rotate-1">
+          your photo shelf ♡ ({albumPhotos.length})
+        </button>
+        <button onClick={onExit}
+          className="ink-sm bg-white px-3 py-1 text-sm font-bold transition hover:rotate-1">
+          ← back outside
+        </button>
       </div>
 
-      <div className="mt-4 grid items-start justify-center gap-8 lg:grid-cols-[560px_360px]">
-        {/* ── left: camera ── */}
-        <div className="flex flex-col items-center">
-          <div className="ink ink-shadow w-full bg-white p-3">
-            <div className="ink-sm relative aspect-[4/3] overflow-hidden bg-blush">
-          <video ref={cam.videoRef} autoPlay playsInline muted
-            className="-scale-x-100 h-full w-full object-cover transition-[filter] duration-300"
-            style={{ display: cam.status === 'on' ? 'block' : 'none', filter: filter.css }} />
-          {cam.status !== 'on' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-              <p className="max-w-xs text-lg leading-snug">
-                {cam.status === 'error'
-                  ? `camera didn't start: ${cam.error}`
-                  : 'your camera is off. allow access to see yourself ♡'}
-              </p>
-              <button onClick={cam.start}
-                className="ink-sm bg-pink-mid px-5 py-2 font-bold transition hover:-rotate-1">
-                turn camera on
-              </button>
-            </div>
-          )}
-          {cam.status === 'on' && (
-            <span className="absolute left-3 top-3 rounded-full bg-white/85 px-3 py-0.5 text-sm font-bold">
-              ● live, mirrored
-            </span>
-          )}
-          {countdown !== null && (
-            <div className="absolute inset-0 flex items-center justify-center bg-ink/20">
-              <span key={countdown} className="animate-countpop font-hand text-[110px] font-bold leading-none text-white drop-shadow-[0_4px_0_rgba(194,67,127,.7)]">
-                {countdown}
-              </span>
-            </div>
-          )}
-          {flash && <div className="animate-flash pointer-events-none absolute inset-0 bg-white" />}
+      <div className="mt-2 flex w-full max-w-[960px] flex-wrap items-center justify-center gap-2">
+        <span className="font-hand text-xl font-bold">pick a frame ♡</span>
+        <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+          {FRAMES.map((f) => (
+            <button key={f.id} onClick={() => selectFrame(f.id)}
+              className={`ink-sm px-2.5 py-1.5 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+              <span className="block text-[13px] font-bold leading-tight">{f.name}</span>
+              <span className="block text-[10px] opacity-60">{f.note}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      <button onClick={takePhoto} disabled={cam.status !== 'on' || shooting}
-        className="ink ink-shadow mt-5 bg-pink-mid px-8 py-2.5 font-hand text-3xl font-bold transition hover:-rotate-1 disabled:opacity-40">
-        {shooting ? (shotLabel || 'get ready…')
-          : selectedSlot !== null ? `retake photo ${selectedSlot + 1}!`
-          : photoCount === 4 ? 'start a 4 shot burst!' : 'take a photo!'}
-      </button>
-      <p className="mt-2 max-w-[480px] text-center text-sm opacity-60">
-        {selectedSlot !== null
-          ? <>photo {selectedSlot + 1} is picked. the shutter replaces <b>only that one</b> (old one goes to undo). <button className="underline" onClick={() => setSelectedSlot(null)}>cancel</button></>
-          : photoCount === 4
-            ? '4 shots in a row, countdown before each, then off to decorating!'
-            : 'one shot into this frame, then off to decorating!'} · {filled}/{photoCount} filled
-      </p>
-      {undoStack.length > 0 && (
-        <button onClick={undoLastPhoto}
-          className="ink-sm mt-2 bg-white px-4 py-1.5 text-sm font-bold transition hover:-rotate-1">
-          ↩ undo, bring that photo back ({undoStack.length})
-        </button>
-      )}
+      <div className="mt-2 grid w-full max-w-[960px] flex-1 items-center justify-center gap-4 lg:grid-cols-[minmax(0,480px)_minmax(0,280px)] lg:gap-5">
+        {/* ── left: camera ── */}
+        <div className="flex flex-col items-center">
+          <div className="ink ink-shadow w-full max-w-[480px] bg-white p-2">
+            <div className="ink-sm relative aspect-[4/3] max-h-[min(42vh,360px)] w-full overflow-hidden bg-blush lg:max-h-[min(48vh,380px)]">
+              <video ref={cam.videoRef} autoPlay playsInline muted
+                className="-scale-x-100 h-full w-full object-cover transition-[filter] duration-300"
+                style={{ display: cam.status === 'on' ? 'block' : 'none', filter: filter.css }} />
+              {cam.status !== 'on' && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center">
+                  <p className="max-w-xs text-base leading-snug">
+                    {cam.status === 'error'
+                      ? `camera didn't start: ${cam.error}`
+                      : 'your camera is off. allow access to see yourself ♡'}
+                  </p>
+                  <button onClick={cam.start}
+                    className="ink-sm bg-pink-mid px-4 py-1.5 text-sm font-bold transition hover:-rotate-1">
+                    turn camera on
+                  </button>
+                </div>
+              )}
+              {cam.status === 'on' && (
+                <span className="absolute left-2 top-2 rounded-full bg-white/85 px-2.5 py-0.5 text-xs font-bold">
+                  ● live, mirrored
+                </span>
+              )}
+              {countdown !== null && (
+                <div className="absolute inset-0 flex items-center justify-center bg-ink/20">
+                  <span key={countdown} className="animate-countpop font-hand text-[90px] font-bold leading-none text-white drop-shadow-[0_4px_0_rgba(194,67,127,.7)] lg:text-[110px]">
+                    {countdown}
+                  </span>
+                </div>
+              )}
+              {flash && <div className="animate-flash pointer-events-none absolute inset-0 bg-white" />}
+            </div>
+          </div>
 
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <button onClick={takePhoto} disabled={cam.status !== 'on' || shooting}
+            className="ink ink-shadow mt-2.5 bg-pink-mid px-6 py-1.5 font-hand text-2xl font-bold transition hover:-rotate-1 disabled:opacity-40">
+            {shooting ? (shotLabel || 'get ready…')
+              : selectedSlot !== null ? `retake photo ${selectedSlot + 1}!`
+              : photoCount === 4 ? 'start a 4 shot burst!' : 'take a photo!'}
+          </button>
+          <p className="mt-1 max-w-[440px] text-center text-xs opacity-60">
+            {selectedSlot !== null
+              ? <>photo {selectedSlot + 1} is picked. the shutter replaces <b>only that one</b>. <button className="underline" onClick={() => setSelectedSlot(null)}>cancel</button></>
+              : photoCount === 4
+                ? '4 shots in a row, then off to decorating!'
+                : 'one shot, then off to decorating!'} · {filled}/{photoCount} filled
+          </p>
+          {undoStack.length > 0 && (
+            <button onClick={undoLastPhoto}
+              className="ink-sm mt-1 bg-white px-3 py-1 text-xs font-bold transition hover:-rotate-1">
+              ↩ undo ({undoStack.length})
+            </button>
+          )}
+
+          <div className="mt-2 flex flex-wrap justify-center gap-1.5">
             {FILTERS.map((f) => (
               <button key={f.id} onClick={() => setFilter(f)}
-                className={`ink-sm flex items-center gap-2 px-3 py-1.5 text-sm font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
-                <span className="inline-block h-4 w-6 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
+                className={`ink-sm flex items-center gap-1.5 px-2 py-1 text-xs font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+                <span className="inline-block h-3 w-4 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
                 {f.name}
               </button>
             ))}
           </div>
         </div>
 
-        {/* ── right: live frame preview ── */}
-        <div className="flex flex-col items-center">
-          <p className="font-hand text-3xl font-bold">your frame</p>
-          <div className="relative mt-3">
-            <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts}
-              selectedSlot={selectedSlot}
-              onSelectSlot={(i) => setSelectedSlot((cur) => (cur === i ? null : i))} />
+        {/* ── right: live frame preview (scaled down so the tall strip fits) ── */}
+        <div className="flex flex-col items-center justify-center">
+          <p className="font-hand text-xl font-bold">your frame</p>
+          {/* fixed box so CSS scale shrinks layout space too, not just the drawing */}
+          <div className={`relative mt-1 overflow-hidden ${frame === 'strip' ? 'h-[390px] w-[130px] lg:h-[370px]' : 'h-[300px] w-[280px]'}`}>
+            <div className={`absolute left-1/2 top-0 -translate-x-1/2 origin-top ${frame === 'strip' ? 'scale-[0.48]' : 'scale-[0.78]'}`}>
+              <FramePreview frame={frame} photos={photos} filterCss={filter.css} onClearSlot={clearSlot} texts={texts}
+                selectedSlot={selectedSlot}
+                onSelectSlot={(i) => setSelectedSlot((cur) => (cur === i ? null : i))} />
+            </div>
           </div>
-          <p className="mt-3 max-w-[300px] text-center text-sm opacity-60">
-            {filled}/{photoCount} filled. tap a photo in the frame to retake just that one
+          <p className="mt-1 max-w-[240px] text-center text-xs opacity-60">
+            tap a photo to retake · {filled}/{photoCount}
           </p>
           {filled > 0 && (
             <button onClick={() => setView('decorate')}
-              className="ink ink-shadow mt-4 bg-ink px-7 py-2.5 font-hand text-3xl font-bold text-white transition hover:-rotate-1">
+              className="ink ink-shadow mt-2 bg-ink px-5 py-1.5 font-hand text-2xl font-bold text-white transition hover:-rotate-1">
               decorate your photo →
             </button>
           )}
         </div>
       </div>
-
-      <button onClick={onExit}
-        className="ink-sm mt-6 bg-white px-5 py-2 font-bold transition hover:rotate-1">
-        ← back outside
-      </button>
     </div>
   )
 }
