@@ -112,8 +112,9 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
       ...prev,
       [frame]: prev[frame].map((p, i) => (i === index ? shot : p)),
     }))
-    // and keep a copy on the photo shelf
-    saveToAlbum(shot).then((saved) => setAlbumPhotos((prev) => [saved, ...prev])).catch(() => {})
+    // the shelf copy keeps the filter you shot with; the frame keeps the plain shot so filters can still change
+    const shelfShot = captureFrame(cam.videoRef.current, filter.css) ?? shot
+    saveToAlbum(shelfShot).then((saved) => setAlbumPhotos((prev) => [saved, ...prev])).catch(() => {})
     setFlash(true); window.setTimeout(() => setFlash(false), 480)
     return true
   }
