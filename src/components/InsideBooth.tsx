@@ -315,7 +315,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
 
         <button onClick={() => setView('album')}
           className="ink-sm mt-4 bg-white px-4 py-1.5 font-bold transition hover:-rotate-1">
-          your photo shelf ♡ ({albumPhotos.length})
+          your photo shelf ({albumPhotos.length})
         </button>
 
         <button onClick={onExit}
@@ -339,7 +339,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           </div>
           <button onClick={() => setView('album')}
             className="ink-sm bg-white px-3.5 py-1.5 text-sm font-bold transition hover:-rotate-1">
-            your photo shelf ♡ ({albumPhotos.length})
+            your photo shelf ({albumPhotos.length})
           </button>
           <button onClick={onExit}
             className="ink-sm bg-white px-3.5 py-1.5 text-sm font-bold transition hover:rotate-1">
