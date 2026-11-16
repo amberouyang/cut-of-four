@@ -102,7 +102,7 @@ export default function BoothCover({ opening, onEnter, featured = [] }: {
 
       {/* ground */}
       <path d="M38 528c120-6 240 4 360-2 70-3 140 2 204-2" fill="none" stroke={INK} strokeWidth="2.4" strokeLinecap="round" />
-      <text x="320" y="556" textAnchor="middle" style={{ ...txt(18), fill: '#c2437f' }}>♡ click the curtain to go in ♡</text>
+      <text x="320" y="556" textAnchor="middle" style={{ ...txt(18), fill: '#c2437f' }}>click the curtain to go in</text>
     </svg>
   )
 }
