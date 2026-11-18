@@ -332,11 +332,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
       {/* title + frame picker sit together, just above the camera */}
       <div className="flex w-full max-w-[1100px] flex-col items-center gap-2.5">
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-          <div className="flex items-center gap-1.5">
-            <Bow size={26} className="-rotate-12" />
-            <h2 className="font-hand text-4xl font-bold">you're inside!</h2>
-            <HeartDoodle size={22} />
-          </div>
+          <h2 className="font-hand text-4xl font-bold">you're inside!</h2>
           <button onClick={() => setView('album')}
             className="ink-sm bg-white px-3.5 py-1.5 text-sm font-bold transition hover:-rotate-1">
             your photo shelf ({albumPhotos.length})
@@ -348,7 +344,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="font-hand text-2xl font-bold">pick a frame ♡</span>
+          <span className="font-hand text-2xl font-bold">pick a frame</span>
           {FRAMES.map((f) => (
             <button key={f.id} onClick={() => selectFrame(f.id)}
               className={`ink-sm px-3 py-1.5 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
