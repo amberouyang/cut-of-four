@@ -412,12 +412,13 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
             </button>
           )}
 
-          <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
+          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-2">
+            <span className="font-hand text-2xl font-bold">pick a filter</span>
             {FILTERS.map((f) => (
               <button key={f.id} onClick={() => setFilter(f)}
-                className={`ink-sm flex items-center gap-1.5 px-2.5 py-1 text-sm font-bold transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
-                <span className="inline-block h-3.5 w-5 rounded-sm border border-ink/30" style={{ background: f.swatch }} />
-                {f.name}
+                className={`ink-sm px-3 py-1.5 text-left transition hover:-rotate-1 ${filter.id === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+                <span className="block text-sm font-bold leading-tight">{f.name}</span>
+                <span className="block text-[11px] opacity-60">{f.note}</span>
               </button>
             ))}
           </div>
