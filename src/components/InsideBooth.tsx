@@ -343,15 +343,17 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
           </button>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex flex-col items-center gap-1.5">
           <span className="font-hand text-2xl font-bold">pick a frame</span>
-          {FRAMES.map((f) => (
-            <button key={f.id} onClick={() => selectFrame(f.id)}
-              className={`ink-sm px-3 py-1.5 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
-              <span className="block text-sm font-bold leading-tight">{f.name}</span>
-              <span className="block text-[11px] opacity-60">{f.note}</span>
-            </button>
-          ))}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {FRAMES.map((f) => (
+              <button key={f.id} onClick={() => selectFrame(f.id)}
+                className={`ink-sm px-3 py-1.5 text-left transition hover:-rotate-1 ${frame === f.id ? 'bg-pink-mid' : 'bg-white'}`}>
+                <span className="block text-sm font-bold leading-tight">{f.name}</span>
+                <span className="block text-[11px] opacity-60">{f.note}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
