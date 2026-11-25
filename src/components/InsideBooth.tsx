@@ -427,7 +427,7 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
         </div>
 
         {/* ── right: live frame preview (sized per frame so nothing gets clipped) ── */}
-        <div className="flex flex-col items-center justify-center self-start lg:self-center">
+        <div className="flex flex-col items-center self-start">
           <p className="font-hand text-2xl font-bold">your frame</p>
           {(() => {
             // box size matches the scaled frame so music / instagram aren't cut off at the bottom
