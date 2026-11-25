@@ -331,15 +331,15 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
     <div className="paper-bg flex min-h-screen flex-col items-center justify-center gap-3 px-4 py-4 font-doodle text-ink lg:min-h-dvh lg:py-3">
       {/* title + frame picker sit together, just above the camera */}
       <div className="flex w-full max-w-[1100px] flex-col items-center gap-2.5">
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+        <div className="relative flex w-full flex-col items-center gap-1.5">
+          <button onClick={onExit}
+            className="ink-sm absolute right-0 top-0 bg-white px-3.5 py-1.5 text-sm font-bold transition hover:rotate-1">
+            ← back outside
+          </button>
           <h2 className="font-hand text-4xl font-bold">you're inside!</h2>
           <button onClick={() => setView('album')}
             className="ink-sm bg-white px-3.5 py-1.5 text-sm font-bold transition hover:-rotate-1">
             your photo shelf ({albumPhotos.length})
-          </button>
-          <button onClick={onExit}
-            className="ink-sm bg-white px-3.5 py-1.5 text-sm font-bold transition hover:rotate-1">
-            ← back outside
           </button>
         </div>
 
