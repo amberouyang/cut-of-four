@@ -400,13 +400,6 @@ export default function InsideBooth({ onExit }: { onExit: () => void }) {
               : selectedSlot !== null ? `retake photo ${selectedSlot + 1}!`
               : photoCount === 4 ? 'start a 4 shot burst!' : 'take a photo!'}
           </button>
-          <p className="mt-1.5 max-w-[500px] text-center text-sm opacity-60">
-            {selectedSlot !== null
-              ? <>photo {selectedSlot + 1} is picked. the shutter replaces <b>only that one</b>. <button className="underline" onClick={() => setSelectedSlot(null)}>cancel</button></>
-              : photoCount === 4
-                ? '4 shots in a row, then off to decorating!'
-                : 'one shot, then off to decorating!'} · {filled}/{photoCount} filled
-          </p>
           {undoStack.length > 0 && (
             <button onClick={undoLastPhoto}
               className="ink-sm mt-1.5 bg-white px-3 py-1 text-sm font-bold transition hover:-rotate-1">
